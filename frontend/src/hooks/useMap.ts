@@ -1,17 +1,18 @@
-import { useEffect, useState, RefObject, useRef, MutableRefObject } from 'react';
+import { useEffect, useState, RefObject, useRef } from 'react';
 
 interface UseMapTypes {
-    targetEle: RefObject<HTMLElement> | null;
+    markers: Array<any>
 }
 
 export const useMap = (props: UseMapTypes) => {
+    const targetEle = useRef<HTMLDivElement | null>(null);
     const mapInstance = useRef<naver.maps.Map>();
-    const [center, setCenter] = useState({ lat: 0, lot: 0 });
-    const [markers, setMarkers] = useState<Array<naver.maps.Marker>>([]);
+    const [location, setLocation] = useState({ lat: 0, lot: 0, radius: 13 });
+    const [markerIns, setMarkerIns] = useState<Array<naver.maps.Marker>>([]);
 
     useEffect(() => {
-        if (props.targetEle?.current) {
-            const MapInstance = new naver.maps.Map(props.targetEle.current, {
+        if (targetEle?.current) {
+            const MapInstance = new naver.maps.Map(targetEle.current, {
                 center: new naver.maps.LatLng(35.8456644052076, 128.61277893156978),
                 zoom: 13,
                 zoomControl: true,
@@ -40,6 +41,21 @@ export const useMap = (props: UseMapTypes) => {
         }
     }, [])
 
+    useEffect(() => {
+        if (mapInstance.current) {
+            const markerInsList = props.markers.map(info => {
+                return new naver.maps.Marker({
+                    position: new naver.maps.LatLng(info.lat, info.lot),
+                    map: mapInstance.current
+                });
+            });
+
+            removeMarker();
+
+            setMarkerIns(() => markerInsList);
+        }
+    }, [props.markers])
+
     const setLocationCenter = () => {
         const locationBtnHtml = '<a href="#" class="btn_mylct"><span class="spr_trff spr_ico_mylct">NAVER 그린팩토리</span></a>';
         const customControl = new naver.maps.CustomControl(locationBtnHtml, {
@@ -58,41 +74,48 @@ export const useMap = (props: UseMapTypes) => {
         });
     }
 
-    const handleDraged = () => changeLocation();
+    const handleDraged = () => onChangeLocation();
 
-    const handleZoomChagne = () => changeLocation();
+    const handleZoomChagne = () => onChangeLocation();
 
-    const setMarker = (list: Array<any>) => {
+    // const setMarker = (list: Array<any>) => {
 
-        if (mapInstance.current) {
-            const markerList = list.map(info => {
-                return new naver.maps.Marker({
-                    position: new naver.maps.LatLng(info.lat, info.lot),
-                    map: mapInstance.current
-                });
-            });
+    //     // if (mapInstance.current) {
+    //     //     const markerList = list.map(info => {
+    //     //         return new naver.maps.Marker({
+    //     //             position: new naver.maps.LatLng(info.lat, info.lot),
+    //     //             map: mapInstance.current
+    //     //         });
+    //     //     });
 
-            removeMarker();
+    //     //     removeMarker();
 
-            setMarkers(() => markerList);
-        }
-    }
+    //     //     setMarkers(() => markerList);
+    //     // }
+    // }
 
     const removeMarker = () => {
-        markers.forEach(marker => {
+        markerIns.forEach(marker => {
             marker.setMap(null);
         })
     }
 
-    const changeLocation = () => {
+    // const changeLocation = () => {
+    //     if (mapInstance.current) {
+    //         const { x, y } = mapInstance.current.getCenter();
+    //         setCenter((prevalue) => ({ ...prevalue, lat: y, lot: x }));
+    //     }
+    // }
+
+    const onChangeLocation = () => {
         if (mapInstance.current) {
-            const centerLocation = mapInstance.current.getCenter();
-            setCenter({ lat: centerLocation.y, lot: centerLocation.x });
+            const { x, y } = mapInstance.current.getCenter();
+            setLocation((prevalue) => ({ ...prevalue, lat: y, lot: x }));
         }
     }
 
     return {
-        setMarker,
-        center
+        targetEle,
+        location
     }
 }

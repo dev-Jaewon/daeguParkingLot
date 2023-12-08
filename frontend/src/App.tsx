@@ -1,28 +1,23 @@
-import { useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
+import { useQuery } from '@tanstack/react-query';
 import { getParkList } from './utils/api';
-import { useMap } from './hooks/useMap';
 import { List } from './components/List';
+import { useMap } from './hooks/useMap';
 
 function App() {
-  const mapElement = useRef<HTMLDivElement | null>(null);
+  const [locationTrigger, setLocationTrigger] = useState<any>();
+  const { data } = useQuery<any>({ queryKey: ['markers', locationTrigger], queryFn: () => getParkList(location), initialData: [] });
+  const { targetEle, location } = useMap({ markers: data });
 
-  const { center, setMarker } = useMap({ targetEle: mapElement });
-
-  useEffect(() => {
-    const call = async () => {
-      const result = await getParkList({ lat: center.lat, lot: center.lot, radius: 10 });
-
-      setMarker(result.data?.items.item);
-    }
-
-    call()
-  }, [center]);
+  useEffect(() => { 
+    setLocationTrigger(location);
+  }, [location])
 
   return (
     <Container>
-      <Map ref={mapElement} />
-      <List />
+      <Map ref={targetEle} />
+      <List markers={data}/>
     </Container>
   )
 }
@@ -36,6 +31,7 @@ const Container = styled.div`
 `;
 
 const Map = styled.div`
-  width: 100%;
-  height: 100%;
+    display:flex;
+    width: 100%;
+    height: 100%;
 `;
