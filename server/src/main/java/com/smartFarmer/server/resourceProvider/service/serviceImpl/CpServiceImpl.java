@@ -7,6 +7,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.smartFarmer.server.resourceProvider.dto.ResponseParkListDto;
+import com.smartFarmer.server.resourceProvider.dto.SearchParkListDto;
 import com.smartFarmer.server.resourceProvider.service.CpService;
 
 import java.net.URI;
@@ -20,21 +21,23 @@ public class CpServiceImpl implements CpService {
 
     @Autowired
     private RestTemplate restTemplate;
-    
+
     @Override
-    public ResponseEntity<ResponseParkListDto.Body> getParkList() {
-            URI uri = UriComponentsBuilder.fromHttpUrl(URL)
+    public ResponseEntity<ResponseParkListDto.Body> getParkList(SearchParkListDto searchParkListDto) {
+        System.out.println(searchParkListDto);
+
+        URI uri = UriComponentsBuilder.fromHttpUrl(URL)
                 .queryParam("type", "json")
                 .queryParam("serviceKey", KEY)
                 .queryParam("pageNo", 1)
-                .queryParam("numOfRows", 10)
-                .queryParam("lat", "35.843739166065")
-                .queryParam("lot", "128.52419828467")
-                .queryParam("radius", 10)
+                .queryParam("numOfRows", 999999)
+                .queryParam("lat", searchParkListDto.getLat())
+                .queryParam("lot", searchParkListDto.getLot())
+                .queryParam("radius", 2)
                 .build(true).toUri();
 
-            ResponseParkListDto result = restTemplate.getForObject(uri, ResponseParkListDto.class);
+        ResponseParkListDto result = restTemplate.getForObject(uri, ResponseParkListDto.class);
 
-            return ResponseEntity.ok().body(result.getBody());
+        return ResponseEntity.ok().body(result.getBody());
     }
 }
