@@ -2,6 +2,7 @@ import { useRef, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { getParkList } from './utils/api';
 import { useMap } from './hooks/useMap';
+import { List } from './components/List';
 
 function App() {
   const mapElement = useRef<HTMLDivElement | null>(null);
@@ -9,7 +10,6 @@ function App() {
   const { center, setMarker } = useMap({ targetEle: mapElement });
 
   useEffect(() => {
-    console.log(123)
     const call = async () => {
       const result = await getParkList({ lat: center.lat, lot: center.lot, radius: 10 });
 
@@ -21,8 +21,8 @@ function App() {
 
   return (
     <Container>
-      <Map ref={mapElement}>
-      </Map>
+      <Map ref={mapElement} />
+      <List />
     </Container>
   )
 }
@@ -30,6 +30,7 @@ function App() {
 export default App;
 
 const Container = styled.div`
+  display:flex;
   width: 100%;
   height: 100vh;
 `;
