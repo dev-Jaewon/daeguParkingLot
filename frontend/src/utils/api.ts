@@ -1,4 +1,5 @@
 import axios from "axios";
+import { SearchParkList } from "../types/SearchParkList";
 
 const api = axios.create({
     baseURL:
@@ -7,3 +8,9 @@ const api = axios.create({
         "Content-Type": "application/json",
     },
 });
+
+export const getParkList = async (searchParkList: SearchParkList) => {
+    return await api.get("http://localhost:8080/cp/parkList",{
+        params: searchParkList
+    });
+}
