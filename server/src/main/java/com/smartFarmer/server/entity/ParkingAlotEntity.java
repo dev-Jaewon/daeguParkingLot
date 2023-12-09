@@ -1,14 +1,17 @@
 package com.smartFarmer.server.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Entity
 @Getter
 @RequiredArgsConstructor
+@Table(name = "PARKINGALOT")
 public class ParkingAlotEntity {
 
     @Id
@@ -41,7 +44,7 @@ public class ParkingAlotEntity {
     private String lot;
     private String theDisabled;
     private String updatedAt;
-    private Integer normalPrice;
+    private Integer nomalPrice;
     private Integer perTime;
     private Integer perPrice;
     private Integer dayPrice;

@@ -26,7 +26,7 @@ public class ParkingAlot {
     private String operatingHolidayEndTime;
     private String priceInformation;
     private String basicTime;
-    private Integer normalPrice;
+    private Integer nomalPrice;
     private Integer perTime;
     private Integer perPrice;
     private Double dayPriceTime;

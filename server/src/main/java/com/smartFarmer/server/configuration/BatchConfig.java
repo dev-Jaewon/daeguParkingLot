@@ -57,7 +57,7 @@ public class BatchConfig {
                         "MANAGE_NUM, NAME, DIVISION, TYPE, STREET_ADDRESS, LOCATION_ADDRESS, AREA_NUM, PAPER_FEED, END_MEMBER, OPERATING_DAY, OPERATING_START_TIME, OPERATING_END_TIME, OPERATING_SAT_START_TIME, OPERATING_SAT_END_TIME, OPERATING_HOLIDAY_START_TIME, OPERATING_HOLIDAY_END_TIME, PRICE_INFORMATION, BASIC_TIME, NOMAL_PRICE, PER_TIME, PER_PRICE, DAY_PRICE_TIME, DAY_PRICE, REGULAR_PRICE, PAYMENT, OTHER_MATTERS, MANAGEMENT_AGENCY, TEL_NUMBER, LAT, LOT, THE_DISABLED, UPDATED_AT\r\n"
                         + //
                         ")VALUES(\r\n" + //
-                        ":manageNum, :name, :division, :type, :streetAddress, :locationAddress, :areaNum, :paperFeed, :endMember, :operatingDay, :operatingStartTime, :operatingEndTime, :operatingSatStartTime, :operatingSatEndTime, :operatingHolidayStartTime, :operatingHolidayEndTime, :priceInformation, :basicTime, :normalPrice, :perTime, :perPrice, :dayPriceTime, :dayPrice, :regularPrice, :payment, :otherMatters, :managementAgency, :telNumber, :lat, :lot, :theDisabled, :updatedAt\r\n"
+                        ":manageNum, :name, :division, :type, :streetAddress, :locationAddress, :areaNum, :paperFeed, :endMember, :operatingDay, :operatingStartTime, :operatingEndTime, :operatingSatStartTime, :operatingSatEndTime, :operatingHolidayStartTime, :operatingHolidayEndTime, :priceInformation, :basicTime, :nomalPrice, :perTime, :perPrice, :dayPriceTime, :dayPrice, :regularPrice, :payment, :otherMatters, :managementAgency, :telNumber, :lat, :lot, :theDisabled, :updatedAt\r\n"
                         + //
                         ");");
         itemWriter.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<ParkingAlot>());
