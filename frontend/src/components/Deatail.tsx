@@ -1,0 +1,270 @@
+import styled from '@emotion/styled';
+import { MdLocationOn, MdAccessTimeFilled, MdMessage } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
+import { IoPricetag } from "react-icons/io5";
+interface DetailProps {
+    info: any
+}
+
+export const Detail = ({ info }: DetailProps) => {
+    return <Container>
+        <Header>
+            <div />
+            <Title>{info.name}</Title>
+        </Header>
+        {info.locationAddress && <Info>
+            <MdLocationOn size={'20px'} />
+            <p>{info.locationAddress}</p>
+        </Info>}
+        {info.streetAddress && <Info>
+            <MdLocationOn size={'20px'} />
+            <p>{info.streetAddress}</p>
+        </Info>}
+        {info.operatingDay && <Info>
+            <MdAccessTimeFilled size={'20px'} />
+            <p>{info.operatingDay.replaceAll("+", ", ") + " 이용가능"}</p>
+        </Info>}
+        <DetailInfo>
+            <span>평일 :</span>
+            <p>{info.operatingStartTime}~{info.operatingEndTime}</p>
+        </DetailInfo>
+        <DetailInfo>
+            <span>주말 :</span>
+            <p>{info.operatingSatStartTime}~{info.operatingSatEndTime}</p>
+        </DetailInfo>
+        <DetailInfo>
+            <span>공휴일 :</span>
+            <p>{info.operatingHolidayStartTime}~{info.operatingHolidayEndTime}</p>
+        </DetailInfo>
+        <Divider />
+        <Price>
+            <IoPricetag size={'20px'} />
+            <span>요금 : {info.priceInformation}</span>
+        </Price>
+        <DetailInfo>
+            <span>기본시간 :</span>
+            <p>{info.basicTime} 분</p>
+        </DetailInfo>
+        <DetailInfo>
+            <span>기본요금 :</span>
+            <p>{info.nomalPrice} 원</p>
+        </DetailInfo>
+        <DetailInfo>
+            <span>추가요금 :</span>
+            <p>{info.perTime}분당 {info.perPrice} 원</p>
+        </DetailInfo>
+        {info.dayPrice > 0 && <DetailInfo>
+            <span>일일 요금 :</span>
+            <p>{info.dayPrice} 원</p>
+        </DetailInfo>}
+        {info.regularPrice > 0 && <DetailInfo>
+            <span>정기권 요금 :</span>
+            <p>{info.regularPrice} 원</p>
+        </DetailInfo>}
+        {info.payment &&
+            <DetailInfo>
+                <span>결제방법 :</span>
+                <p>{info.payment.replaceAll("+", ", ")}</p>
+            </DetailInfo>
+        }
+        <Divider />
+        <Info>
+            <MdMessage size={'20px'} />
+            <p>기타사항</p>
+        </Info>
+        {info.otherMatters && <DetailInfo>
+            <span>-</span>
+            <p>{info.otherMatters.replaceAll("+", ", ")}</p>
+        </DetailInfo>}
+        <DetailInfo>
+            <span>- 관리기관 :</span>
+            <p>{info.managementAgency}</p>
+        </DetailInfo>
+        <DetailInfo>
+            <span>- 문의번호 :</span>
+            <p>{info.telNumber}</p>
+        </DetailInfo>
+        <DetailInfo>
+            <span>- 업데이트 날짜 :</span>
+            <p>{info.updatedAt}</p>
+        </DetailInfo>
+        <Test></Test>
+
+        <TestContainer>
+            <Header>
+                <Title>Review</Title>
+            </Header>
+        </TestContainer>
+        {/* <NoReview>등록된 리뷰가 없습니다.</NoReview> */}
+        <ReviewContents>
+
+            <Review>
+                <div className='review_info'>
+                    <div className='nick_name'>
+                        <FaUser /> 가나다마바사아
+                    </div>
+                    <div className='create-at'>2023/12/30</div>
+                </div>
+                <div className='content'>주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요</div>
+            </Review>
+            <Review>
+                <div className='review_info'>
+                    <div className='nick_name'>
+                        <FaUser /> 가나다마바사아
+                    </div>
+                    <div className='create-at'>2023/12/30</div>
+                </div>
+                <div className='content'>주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요</div>
+            </Review>
+            <Review>
+                <div className='review_info'>
+                    <div className='nick_name'>
+                        <FaUser /> 가나다마바사아
+                    </div>
+                    <div className='create-at'>2023/12/30</div>
+                </div>
+                <div className='content'>주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요</div>
+            </Review>
+            <Review>
+                <div className='review_info'>
+                    <div className='nick_name'>
+                        <FaUser /> 가나다마바사아
+                    </div>
+                    <div className='create-at'>2023/12/30</div>
+                </div>
+                <div className='content'>주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요</div>
+            </Review>
+            <Review>
+                <div className='review_info'>
+                    <div className='nick_name'>
+                        <FaUser /> 가나다마바사아
+                    </div>
+                    <div className='create-at'>2023/12/30</div>
+                </div>
+                <div className='content'>주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요</div>
+            </Review>
+            <Review>
+                <div className='review_info'>
+                    <div className='nick_name'>
+                        <FaUser /> 가나다마바사아
+                    </div>
+                    <div className='create-at'>2023/12/30</div>
+                </div>
+                <div className='content'>주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요</div>
+            </Review>
+        </ReviewContents>
+    </Container>
+}
+
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 450px;
+    box-shadow: #09090940 -2px 0px 5px;
+    z-index: 1;
+`;
+
+const Header = styled.div`
+    position: relative;
+    margin-bottom: 20px;
+
+    div {
+        width: 100%;
+        height: 250px;
+        background-color: #f5f5f5;
+    }
+`;
+
+const Title = styled.h1`
+    position: absolute;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #212121;
+    padding: 10px 20px;
+    bottom: 0px;
+    background-color: white;
+`;
+
+const Info = styled.div`
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px;
+    padding-left: 20px;
+
+    p {
+        font-size: 1.2rem;
+    }
+`;
+
+const Divider = styled.div`
+    margin-top: 50px;
+`;
+
+const Price = styled.div`
+    display: flex;
+    gap: 10px;
+    padding-left: 20px;
+    font-size: 1.2rem;
+`;
+
+const DetailInfo = styled.div`
+    display: flex;
+    padding-left: 50px;
+    font-size: 1rem;
+    gap: 5px;
+    line-height: 25px;
+`;
+
+const Test = styled.div`
+    padding-top: 30px;
+    height: 1px;
+    width: 100%;
+    box-shadow: rgb(33 35 38) 0px 10px 10px -13px;
+`;
+
+const TestContainer = styled.div`
+    display: flex;
+    padding: 10px 0;
+    height: 100px;
+    
+`;
+
+const NoReview = styled.div`
+    padding: 100px 0;
+    text-align: center;
+    box-shadow: rgb(33 35 38) 0px 10px 10px -13px;
+`;
+
+const Review = styled.div`
+    box-shadow: 0 2px 1px -2px gray;
+    padding: 20px;
+
+    .review_info{
+        display: flex;
+        justify-content: space-between;
+
+        .nick_name{
+            display: flex;
+            gap: 10px;
+        }
+
+        .create-at{
+            font-size: 13px;
+        }
+    }
+
+    .content{
+        margin-top: 20px;
+        font-size:18px;
+        font-style: italic;
+        font-weight: 300;
+        line-height: 25px;
+    }    
+`;
+
+const ReviewContents = styled.div`
+    display: flex;
+    flex-direction: column;
+`;

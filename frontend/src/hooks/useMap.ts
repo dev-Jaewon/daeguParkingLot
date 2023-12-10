@@ -1,4 +1,4 @@
-import { useEffect, useState, RefObject, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 interface UseMapTypes {
     markers: Array<any>
@@ -7,7 +7,7 @@ interface UseMapTypes {
 export const useMap = (props: UseMapTypes) => {
     const targetEle = useRef<HTMLDivElement | null>(null);
     const mapInstance = useRef<naver.maps.Map>();
-    const [location, setLocation] = useState({ lat: 0, lot: 0, radius: 13 });
+    const [location, setLocation] = useState({ lat: 0, lot: 0, range: 1500 });
     const [markerIns, setMarkerIns] = useState<Array<naver.maps.Marker>>([]);
 
     useEffect(() => {
