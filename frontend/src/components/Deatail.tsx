@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
 import { MdLocationOn, MdAccessTimeFilled, MdMessage } from "react-icons/md";
-import { FaUser } from "react-icons/fa";
 import { IoPricetag } from "react-icons/io5";
+import { Reviews } from './Reviews';
+
 interface DetailProps {
     info: any
 }
@@ -88,71 +89,8 @@ export const Detail = ({ info }: DetailProps) => {
             <span>- 업데이트 날짜 :</span>
             <p>{info.updatedAt}</p>
         </DetailInfo>
-        <Test></Test>
-
-        <TestContainer>
-            <Header>
-                <Title>Review</Title>
-            </Header>
-        </TestContainer>
-        {/* <NoReview>등록된 리뷰가 없습니다.</NoReview> */}
-        <ReviewContents>
-
-            <Review>
-                <div className='review_info'>
-                    <div className='nick_name'>
-                        <FaUser /> 가나다마바사아
-                    </div>
-                    <div className='create-at'>2023/12/30</div>
-                </div>
-                <div className='content'>주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요</div>
-            </Review>
-            <Review>
-                <div className='review_info'>
-                    <div className='nick_name'>
-                        <FaUser /> 가나다마바사아
-                    </div>
-                    <div className='create-at'>2023/12/30</div>
-                </div>
-                <div className='content'>주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요</div>
-            </Review>
-            <Review>
-                <div className='review_info'>
-                    <div className='nick_name'>
-                        <FaUser /> 가나다마바사아
-                    </div>
-                    <div className='create-at'>2023/12/30</div>
-                </div>
-                <div className='content'>주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요</div>
-            </Review>
-            <Review>
-                <div className='review_info'>
-                    <div className='nick_name'>
-                        <FaUser /> 가나다마바사아
-                    </div>
-                    <div className='create-at'>2023/12/30</div>
-                </div>
-                <div className='content'>주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요</div>
-            </Review>
-            <Review>
-                <div className='review_info'>
-                    <div className='nick_name'>
-                        <FaUser /> 가나다마바사아
-                    </div>
-                    <div className='create-at'>2023/12/30</div>
-                </div>
-                <div className='content'>주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요</div>
-            </Review>
-            <Review>
-                <div className='review_info'>
-                    <div className='nick_name'>
-                        <FaUser /> 가나다마바사아
-                    </div>
-                    <div className='create-at'>2023/12/30</div>
-                </div>
-                <div className='content'>주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요주차 간격 매우 넓고 가격도 저렴해서 자주 이용할꺼 같아요</div>
-            </Review>
-        </ReviewContents>
+        <AricleEnd />
+        <Reviews />        
     </Container>
 }
 
@@ -217,54 +155,10 @@ const DetailInfo = styled.div`
     line-height: 25px;
 `;
 
-const Test = styled.div`
+const AricleEnd = styled.div`
     padding-top: 30px;
     height: 1px;
     width: 100%;
     box-shadow: rgb(33 35 38) 0px 10px 10px -13px;
 `;
 
-const TestContainer = styled.div`
-    display: flex;
-    padding: 10px 0;
-    height: 100px;
-    
-`;
-
-const NoReview = styled.div`
-    padding: 100px 0;
-    text-align: center;
-    box-shadow: rgb(33 35 38) 0px 10px 10px -13px;
-`;
-
-const Review = styled.div`
-    box-shadow: 0 2px 1px -2px gray;
-    padding: 20px;
-
-    .review_info{
-        display: flex;
-        justify-content: space-between;
-
-        .nick_name{
-            display: flex;
-            gap: 10px;
-        }
-
-        .create-at{
-            font-size: 13px;
-        }
-    }
-
-    .content{
-        margin-top: 20px;
-        font-size:18px;
-        font-style: italic;
-        font-weight: 300;
-        line-height: 25px;
-    }    
-`;
-
-const ReviewContents = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
