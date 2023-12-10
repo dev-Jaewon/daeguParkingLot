@@ -6,7 +6,7 @@ interface ListProps {
 }
 
 export const List = ({ markers, setSelectPark }: ListProps) => {
-    return <Container>
+    return <Container className='scroll-y'>
         {
             markers.map((marker, i) => {
                 return <ItemContainer>
@@ -37,7 +37,6 @@ export const List = ({ markers, setSelectPark }: ListProps) => {
 const Container = styled.div`
     flex: 1 0 350px;
     height: 100%;
-    overflow-y: auto;
 `;
 
 const ItemContainer = styled.div`
@@ -88,6 +87,6 @@ const TimeContainer = styled.div`
     }
 `;
 
-const Price = styled.p<{price: string}>`
-    color: ${({price})=>price === '유료' ? 'red' : 'black'};
+const Price = styled.p<{ price: string }>`
+    color: ${({ price }) => price === '유료' ? 'red' : 'black'};
 `;

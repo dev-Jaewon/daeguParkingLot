@@ -8,7 +8,7 @@ interface DetailProps {
 }
 
 export const Detail = ({ info }: DetailProps) => {
-    return <Container>
+    return <Container className='scroll-y'>
         <Header>
             <div />
             <Title>{info.name}</Title>
