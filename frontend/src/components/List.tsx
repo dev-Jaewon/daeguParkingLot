@@ -9,7 +9,7 @@ export const List = ({ markers, setSelectPark }: ListProps) => {
     return <Container className='scroll-y'>
         {
             markers.map((marker, i) => {
-                return <ItemContainer>
+                return <ItemContainer key={marker.id}>
                     <TitleWrap onClick={() => setSelectPark(i)}>
                         <div className='title'>{marker.name}</div>
                         <div className='type'>{marker.division}</div>
