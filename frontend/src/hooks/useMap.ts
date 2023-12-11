@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { PER_RANGE } from '../Constant';
 
 interface UseMapTypes {
     markers: Array<any>
@@ -28,6 +29,17 @@ export const useMap = (props: UseMapTypes) => {
 
             mapInstance.current = MapInstance;
         }
+
+        let zoomListener: naver.maps.MapEventListener | null = null;
+
+        if (mapInstance.current) {
+            mapInstance.current.addListener('zoom_changed', handleZoomChagne);
+        }
+
+        return () => {
+            if (zoomListener) mapInstance.current?.removeListener(zoomListener);
+        }
+
     }, [])
 
     useEffect(() => {
@@ -44,6 +56,16 @@ export const useMap = (props: UseMapTypes) => {
             setMarkerIns(() => markerInsList);
         }
     }, [props.markers])
+
+    const handleZoomChagne = (zoom: number) => {
+        if (zoom >= 16) {
+            setLocation(v => ({ ...v, range: PER_RANGE[16] }));
+        } else if (zoom <= 11) {
+            setLocation(v => ({ ...v, range: PER_RANGE[11] }));
+        } else {
+            setLocation(v => ({ ...v, range: PER_RANGE[zoom as keyof typeof PER_RANGE] }));
+        }
+    }
 
     const setPosition = () => {
         navigator.geolocation.getCurrentPosition((position) => {
