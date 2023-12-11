@@ -62,6 +62,7 @@ const SearchLocation = styled.div`
     align-items: center;
     font-weight: 600;
     font-size: 1.3rem;
+    height: 100%;
 `;
 
 const Divider = styled.div`
