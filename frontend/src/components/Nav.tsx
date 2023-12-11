@@ -2,19 +2,22 @@ import styled from '@emotion/styled';
 import { BiCurrentLocation } from "react-icons/bi";
 
 interface NavProps {
-    setPosition: (position: GeolocationPosition) => void
+    setPosition: () => void
+    onChangeLocation: () => void
 }
 
 export const Nav = (props: NavProps) => {
     const handleClickMyLocation = () => {
-        navigator.geolocation.getCurrentPosition((position) => {
-            props.setPosition(position);
-        });
+            props.setPosition();
+    }
+
+    const handleCLickThisLocation = () => {
+        props.onChangeLocation();
     }
 
     return (
         <Container>
-            <SearchLocation>현재 위치 조회</SearchLocation>
+            <SearchLocation onClick={handleCLickThisLocation}>현재 위치 조회</SearchLocation>
             <Divider />
             <i onClick={handleClickMyLocation}>
                 <BiCurrentLocation size={40} />

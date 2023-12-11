@@ -4,17 +4,22 @@ interface UseMapTypes {
     markers: Array<any>
 }
 
+const DEFAULT_LOCATION = {
+    lat: 35.87093386685083,
+    lot: 128.59394073486328
+}
+
 export const useMap = (props: UseMapTypes) => {
     const targetEle = useRef<HTMLDivElement | null>(null);
     const mapInstance = useRef<naver.maps.Map>();
-    const [location, setLocation] = useState({ lat: 0, lot: 0, range: 1500 });
+    const [location, setLocation] = useState({ ...DEFAULT_LOCATION, range: 500 });
     const [markerIns, setMarkerIns] = useState<Array<naver.maps.Marker>>([]);
 
     useEffect(() => {
         if (targetEle?.current) {
             const MapInstance = new naver.maps.Map(targetEle.current, {
-                center: new naver.maps.LatLng(35.8456644052076, 128.61277893156978),
-                zoom: 13,
+                center: new naver.maps.LatLng(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lot),
+                zoom: 17,
                 zoomControl: true,
                 zoomControlOptions: {
                     position: naver.maps.Position.TOP_RIGHT
@@ -22,22 +27,6 @@ export const useMap = (props: UseMapTypes) => {
             });
 
             mapInstance.current = MapInstance;
-        }
-
-        let initListener: naver.maps.MapEventListener | null = null;
-        let moveListener: naver.maps.MapEventListener | null = null;
-        let zoomListener: naver.maps.MapEventListener | null = null;
-
-        if (mapInstance.current) {
-            initListener = mapInstance.current.addListener('init', setLocationCenter);
-            moveListener = mapInstance.current.addListener('dragend', handleDraged);
-            mapInstance.current.addListener('zoom_changed', handleZoomChagne);
-        }
-
-        return () => {
-            if (initListener) mapInstance.current?.removeListener(initListener);
-            if (moveListener) mapInstance.current?.removeListener(moveListener);
-            if (zoomListener) mapInstance.current?.removeListener(zoomListener);
         }
     }, [])
 
@@ -56,56 +45,17 @@ export const useMap = (props: UseMapTypes) => {
         }
     }, [props.markers])
 
-    const setLocationCenter = () => {
-        const locationBtnHtml = '<a href="#" class="btn_mylct"><span class="spr_trff spr_ico_mylct">NAVER 그린팩토리</span></a>';
-        const customControl = new naver.maps.CustomControl(locationBtnHtml, {
-            position: naver.maps.Position.TOP_RIGHT
-        });
-
-        customControl.setMap(mapInstance.current);
-
-        naver.maps.Event.addDOMListener(customControl.getElement(), 'click', () => {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-
-                mapInstance.current?.setCenter(new naver.maps.LatLng(lat, lon));
-            });
+    const setPosition = () => {
+        navigator.geolocation.getCurrentPosition((position) => {
+            mapInstance.current?.setCenter(new naver.maps.LatLng(position.coords.latitude, position.coords.longitude));
         });
     }
-
-    const handleDraged = () => onChangeLocation();
-
-    const handleZoomChagne = () => onChangeLocation();
-
-    // const setMarker = (list: Array<any>) => {
-
-    //     // if (mapInstance.current) {
-    //     //     const markerList = list.map(info => {
-    //     //         return new naver.maps.Marker({
-    //     //             position: new naver.maps.LatLng(info.lat, info.lot),
-    //     //             map: mapInstance.current
-    //     //         });
-    //     //     });
-
-    //     //     removeMarker();
-
-    //     //     setMarkers(() => markerList);
-    //     // }
-    // }
 
     const removeMarker = () => {
         markerIns.forEach(marker => {
             marker.setMap(null);
         })
     }
-
-    // const changeLocation = () => {
-    //     if (mapInstance.current) {
-    //         const { x, y } = mapInstance.current.getCenter();
-    //         setCenter((prevalue) => ({ ...prevalue, lat: y, lot: x }));
-    //     }
-    // }
 
     const onChangeLocation = () => {
         if (mapInstance.current) {
@@ -116,6 +66,8 @@ export const useMap = (props: UseMapTypes) => {
 
     return {
         targetEle,
-        location
+        location,
+        setPosition,
+        onChangeLocation
     }
 }

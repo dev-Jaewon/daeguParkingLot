@@ -5,12 +5,13 @@ import { getParkList } from './utils/api';
 import { List } from './components/List';
 import { useMap } from './hooks/useMap';
 import { Detail } from './components/Deatail';
+import { Nav } from './components/Nav';
 
 function App() {
   const [selectPark, setSelectPark] = useState<number | null>(null);
   const [locationTrigger, setLocationTrigger] = useState<any>();
   const { data } = useQuery<any>({ queryKey: ['markers', locationTrigger], queryFn: () => getParkList(locationTrigger), initialData: [] });
-  const { targetEle, location } = useMap({ markers: data });
+  const { targetEle, location, setPosition, onChangeLocation } = useMap({ markers: data });
 
   useEffect(() => {
     setLocationTrigger(location);
@@ -21,6 +22,7 @@ function App() {
     <Container>
       <MapContainer>
         <Map ref={targetEle} />
+        <Nav setPosition={setPosition} onChangeLocation={onChangeLocation}/>
       </MapContainer>
       {
         selectPark !== null && <Detail info={data[selectPark]} />
