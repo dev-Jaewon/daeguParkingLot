@@ -8,15 +8,19 @@ import { Detail } from './components/Deatail';
 import { Nav } from './components/Nav';
 
 function App() {
-  const [selectPark, setSelectPark] = useState<number | null>(null);
+  // const [selectPark, setSelectPark] = useState<number | null>(null);
   const [locationTrigger, setLocationTrigger] = useState<any>();
   const { data } = useQuery<any>({ queryKey: ['markers', locationTrigger], queryFn: () => getParkList(locationTrigger), initialData: [] });
-  const { targetEle, location, setPosition, onChangeLocation, onClickMarker } = useMap({ markers: data });
+  const { mapInstance, targetEle, location, focusParkingLot, setPosition, onChangeLocation, onClickMarker, setFocusParkingLot } = useMap({ markers: data });
 
   useEffect(() => {
     setLocationTrigger(location);
-    setSelectPark(null);
+    setFocusParkingLot(null);
   }, [location.lat, location.lot])
+
+  useEffect(() => {
+    mapInstance.current?.autoResize();
+  }, [focusParkingLot])
 
   return (
     <Container>
@@ -25,9 +29,9 @@ function App() {
         <Nav setPosition={setPosition} onChangeLocation={onChangeLocation} />
       </MapContainer>
       {
-        selectPark !== null && <Detail info={data[selectPark]} />
+        focusParkingLot !== null && <Detail info={data[focusParkingLot]} />
       }
-      <List markers={data} setSelectPark={setSelectPark} setPosition={setPosition} onClickMarker={onClickMarker} />
+      <List markers={data} setSelectPark={setFocusParkingLot} setPosition={setPosition} onClickMarker={onClickMarker} />
     </Container >
   )
 }

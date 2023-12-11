@@ -16,6 +16,7 @@ export const useMap = (props: UseMapTypes) => {
     const [location, setLocation] = useState({ ...DEFAULT_LOCATION, range: 500 });
     const [markerIns, setMarkerIns] = useState<Array<naver.maps.Marker>>([]);
     const [markerClickEvents, setMarkerClickEvents] = useState<Array<naver.maps.MapEventListener>>();
+    const [focusParkingLot, setFocusParkingLot] = useState<number | null>(null)
 
     useEffect(() => {
         if (targetEle?.current) {
@@ -84,6 +85,7 @@ export const useMap = (props: UseMapTypes) => {
             const { x, y } = markerIns[index].getPosition();
 
             setPosition(y, x);
+            setFocusParkingLot(index);
             t.open(mapInstance.current, markerIns[index]);
         }
     }
@@ -106,7 +108,6 @@ export const useMap = (props: UseMapTypes) => {
     }
 
     const setPosition = (lat: number, lot: number) => {
-        mapInstance?.current?.refresh();
 
         mapInstance.current?.setCenter(new naver.maps.LatLng(lat, lot));
     }
@@ -131,6 +132,9 @@ export const useMap = (props: UseMapTypes) => {
         location,
         setPosition,
         onChangeLocation,
-        onClickMarker
+        onClickMarker,
+        mapInstance,
+        focusParkingLot, 
+        setFocusParkingLot
     }
 }

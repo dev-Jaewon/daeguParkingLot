@@ -2,13 +2,16 @@ import styled from '@emotion/styled';
 import { BiCurrentLocation } from "react-icons/bi";
 
 interface NavProps {
-    setPosition: () => void
+    setPosition: (lat: number, lot: number) => void
     onChangeLocation: () => void
 }
 
 export const Nav = (props: NavProps) => {
     const handleClickMyLocation = () => {
-            props.setPosition();
+        navigator.geolocation.getCurrentPosition(({ coords }) => {
+            props.setPosition(coords.latitude, coords.longitude);
+        });
+
     }
 
     const handleCLickThisLocation = () => {
