@@ -11,23 +11,23 @@ function App() {
   const [selectPark, setSelectPark] = useState<number | null>(null);
   const [locationTrigger, setLocationTrigger] = useState<any>();
   const { data } = useQuery<any>({ queryKey: ['markers', locationTrigger], queryFn: () => getParkList(locationTrigger), initialData: [] });
-  const { targetEle, location, setPosition, onChangeLocation } = useMap({ markers: data });
+  const { targetEle, location, setPosition, onChangeLocation, onClickMarker } = useMap({ markers: data });
 
   useEffect(() => {
     setLocationTrigger(location);
     setSelectPark(null);
-  }, [location])
+  }, [location.lat, location.lot])
 
   return (
     <Container>
       <MapContainer>
         <Map ref={targetEle} />
-        <Nav setPosition={setPosition} onChangeLocation={onChangeLocation}/>
+        <Nav setPosition={setPosition} onChangeLocation={onChangeLocation} />
       </MapContainer>
       {
         selectPark !== null && <Detail info={data[selectPark]} />
       }
-      <List markers={data} setSelectPark={setSelectPark} />
+      <List markers={data} setSelectPark={setSelectPark} setPosition={setPosition} onClickMarker={onClickMarker} />
     </Container >
   )
 }
@@ -38,6 +38,7 @@ const Container = styled.div`
   display:flex;
   width: 100%;
   height: 100vh;
+  user-select:none
 `;
 
 const MapContainer = styled.div`
@@ -45,6 +46,22 @@ const MapContainer = styled.div`
   display:flex;
   width: 100%;
   height: 100%;
+
+  .markerOverlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: 700;
+    width: 60px;
+    padding: 10px 10px;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+    margin-bottom: 5px;
+    background: #000000b5;
+    padding: 10px 20px;
+    color: white;
+  }
 `
 
 const Map = styled.div`

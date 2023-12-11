@@ -3,14 +3,22 @@ import styled from '@emotion/styled'
 interface ListProps {
     markers: Array<any>
     setSelectPark: any;
+    setPosition: (lat: number, lot: number) => void
+    onClickMarker: (index: number) => void
 }
 
-export const List = ({ markers, setSelectPark }: ListProps) => {
+export const List = ({ markers, setSelectPark, setPosition, onClickMarker }: ListProps) => {
+    const handleClickParkingLot = (index: number) => {
+        setSelectPark(index);
+        onClickMarker(index);
+        setPosition(markers[index].lat, markers[index].lot);
+    }
+
     return <Container className='scroll-y'>
         {
             markers.map((marker, i) => {
                 return <ItemContainer key={marker.id}>
-                    <TitleWrap onClick={() => setSelectPark(i)}>
+                    <TitleWrap onClick={() => handleClickParkingLot(i)}>
                         <div className='title'>{marker.name}</div>
                         <div className='type'>{marker.division}</div>
                     </TitleWrap>

@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { PER_RANGE } from '../Constant';
 
 interface UseMapTypes {
-    markers: Array<any>
+    markers: Array<{ lat: number, lot: number }>
 }
 
 const DEFAULT_LOCATION = {
@@ -15,6 +15,7 @@ export const useMap = (props: UseMapTypes) => {
     const mapInstance = useRef<naver.maps.Map>();
     const [location, setLocation] = useState({ ...DEFAULT_LOCATION, range: 500 });
     const [markerIns, setMarkerIns] = useState<Array<naver.maps.Marker>>([]);
+    const [markerClickEvents, setMarkerClickEvents] = useState<Array<naver.maps.MapEventListener>>();
 
     useEffect(() => {
         if (targetEle?.current) {
@@ -43,19 +44,56 @@ export const useMap = (props: UseMapTypes) => {
     }, [])
 
     useEffect(() => {
-        if (mapInstance.current) {
-            const markerInsList = props.markers.map(info => {
-                return new naver.maps.Marker({
-                    position: new naver.maps.LatLng(info.lat, info.lot),
-                    map: mapInstance.current
-                });
-            });
+        if (!mapInstance.current) return;
+        const markerInsList = <Array<naver.maps.Marker>>[];
 
-            removeMarker();
-
-            setMarkerIns(() => markerInsList);
+        for (let marker of props.markers) {
+            markerInsList.push(createMarkerInstance(marker.lat, marker.lot));
         }
+
+        clearMarkerForMap();
+        setMarkerIns(markerInsList);
     }, [props.markers])
+
+    useEffect(() => {
+        const markerClickEvents = <Array<naver.maps.MapEventListener>>[];
+
+        for (let i = 0; i < markerIns.length; i++) {
+            markerClickEvents.push(
+                naver.maps.Event.addListener(markerIns[i], 'click', () => onClickMarker(i))
+            )
+        }
+
+        clearMarkerClickEvent();
+        setMarkerClickEvents(markerClickEvents);
+    }, [markerIns])
+
+    const onClickMarker = (index: number) => {
+        if (!mapInstance.current) return;
+
+        const t = new naver.maps.InfoWindow({
+            content: '<div class="markerOverlay">HERE</div>',
+            borderWidth: 0,
+            disableAnchor: true,
+            backgroundColor: 'transparent',
+        });
+
+        if (t.getMap()) {
+            t.close();
+        } else {
+            const { x, y } = markerIns[index].getPosition();
+
+            setPosition(y, x);
+            t.open(mapInstance.current, markerIns[index]);
+        }
+    }
+
+    const createMarkerInstance = (lat: number, lot: number) => {
+        return new naver.maps.Marker({
+            position: new naver.maps.LatLng(lat, lot),
+            map: mapInstance.current,
+        })
+    }
 
     const handleZoomChagne = (zoom: number) => {
         if (zoom >= 16) {
@@ -67,16 +105,10 @@ export const useMap = (props: UseMapTypes) => {
         }
     }
 
-    const setPosition = () => {
-        navigator.geolocation.getCurrentPosition((position) => {
-            mapInstance.current?.setCenter(new naver.maps.LatLng(position.coords.latitude, position.coords.longitude));
-        });
-    }
+    const setPosition = (lat: number, lot: number) => {
+        mapInstance?.current?.refresh();
 
-    const removeMarker = () => {
-        markerIns.forEach(marker => {
-            marker.setMap(null);
-        })
+        mapInstance.current?.setCenter(new naver.maps.LatLng(lat, lot));
     }
 
     const onChangeLocation = () => {
@@ -86,10 +118,19 @@ export const useMap = (props: UseMapTypes) => {
         }
     }
 
+    const clearMarkerClickEvent = () => {
+        markerClickEvents?.forEach(event => mapInstance.current?.removeListener(event));
+    }
+
+    const clearMarkerForMap = () => {
+        markerIns.forEach(marker => marker.setMap(null));
+    }
+
     return {
         targetEle,
         location,
         setPosition,
-        onChangeLocation
+        onChangeLocation,
+        onClickMarker
     }
 }
