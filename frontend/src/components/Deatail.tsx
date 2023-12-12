@@ -97,7 +97,7 @@ export const Detail = ({ info }: DetailProps) => {
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    flex: 1 0 450px;
+    height: 100%;
     box-shadow: #09090940 -2px 0px 5px;
     z-index: 1;
 `;

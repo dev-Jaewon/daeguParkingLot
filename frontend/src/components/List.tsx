@@ -43,7 +43,6 @@ export const List = ({ markers, setSelectPark, setPosition, onClickMarker }: Lis
 }
 
 const Container = styled.div`
-    flex: 1 0 350px;
     height: 100%;
 `;
 
