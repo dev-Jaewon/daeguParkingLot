@@ -6,6 +6,9 @@ import { List } from './components/List';
 import { useMap } from './hooks/useMap';
 import { Detail } from './components/Deatail';
 import { Nav } from './components/Nav';
+import { Logo } from './components/Logo';
+import { SearchBar } from './components/SearchBar';
+import { IoIosArrowForward } from "react-icons/io";
 
 function App() {
   // const [selectPark, setSelectPark] = useState<number | null>(null);
@@ -22,6 +25,10 @@ function App() {
     mapInstance.current?.autoResize();
   }, [focusParkingLot])
 
+  const handleClickCloseDetail = () => {
+    setFocusParkingLot(null);
+  }
+
   return (
     <Container>
       <MapContainer>
@@ -29,9 +36,18 @@ function App() {
         <Nav setPosition={setPosition} onChangeLocation={onChangeLocation} />
       </MapContainer>
       {
-        focusParkingLot !== null && <Detail info={data[focusParkingLot]} />
+        focusParkingLot !== null && <DetailContainer>
+          <CloseButton onClick={handleClickCloseDetail}>
+            <IoIosArrowForward size={60}/>
+          </CloseButton>
+          <Detail info={data[focusParkingLot]} /></DetailContainer>
       }
-      <List markers={data} setSelectPark={setFocusParkingLot} setPosition={setPosition} onClickMarker={onClickMarker} />
+      <SideContainer>
+        <Logo />
+        <SearchBar />
+        <ResultCount>총 100개의 검색 결과가 있습니다.</ResultCount>
+        <List markers={data} setSelectPark={setFocusParkingLot} setPosition={setPosition} onClickMarker={onClickMarker} />
+      </SideContainer>
     </Container >
   )
 }
@@ -72,4 +88,33 @@ const Map = styled.div`
     display:flex;
     width: 100%;
     height: 100%;
+`;
+
+const SideContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 350px;
+`;
+
+const ResultCount = styled.div`
+    padding: 10px 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 1px;
+`;
+
+const DetailContainer = styled.div`
+  position: relative;
+  flex: 1 0 450px;
+`;
+
+const CloseButton = styled.div`
+  position: absolute;
+  top:50%;
+  background-color: white;
+  right: 98%;
+  box-shadow: rgba(0, 0, 0, 0.15) -5.6px 3.4px 6.2px;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  cursor: pointer;
 `;
