@@ -1,9 +1,11 @@
 import styled from '@emotion/styled';
 import { BiCurrentLocation } from "react-icons/bi";
+import { Loading } from './Loading';
 
 interface NavProps {
     setPosition: (lat: number, lot: number) => void
     onChangeLocation: () => void
+    isLoading: boolean
 }
 
 export const Nav = (props: NavProps) => {
@@ -20,7 +22,13 @@ export const Nav = (props: NavProps) => {
 
     return (
         <Container>
-            <SearchLocation onClick={handleCLickThisLocation}>현재 위치 조회</SearchLocation>
+            <>
+                {
+                    props.isLoading
+                        ? <Loading />
+                        : <SearchLocation onClick={handleCLickThisLocation}>현재 위치 조회</SearchLocation>
+                }
+            </>
             <Divider />
             <i onClick={handleClickMyLocation}>
                 <BiCurrentLocation size={40} />
