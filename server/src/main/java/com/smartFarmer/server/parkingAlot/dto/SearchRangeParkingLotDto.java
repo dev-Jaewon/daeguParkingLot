@@ -5,8 +5,12 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class SearchRangeParkingAlotDto {
+public class SearchRangeParkingLotDto {
     private double lat;
     private double lot;
     private int range;
+    private int page;
+    private int perPage;
+    private String content;
 }
+
