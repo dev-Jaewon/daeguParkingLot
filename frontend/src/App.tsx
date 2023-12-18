@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
-import { getSearch } from './utils/api';
 import { List } from './components/List';
 import { useMap } from './hooks/useMap';
 import { Detail } from './components/Deatail';
@@ -9,31 +7,28 @@ import { Nav } from './components/Nav';
 import { Logo } from './components/Logo';
 import { SearchBar } from './components/SearchBar';
 import { IoIosArrowForward } from "react-icons/io";
-import { ResponseSearchList } from './types/ResponseSearchList';
 import { SearchParkList } from './types/SearchParkList';
+import { useIntersect } from './hooks/useIntercepter';
+import { useSearchQuery } from './hooks/useQuery';
+import { DEFAULT_INFO, DEFAULT_LOCATION } from './Constant';
 
 function App() {
   const [locationTrigger, setLocationTrigger] = useState<SearchParkList>({
-    lat: 0,
-    lot: 0,
-    range: 0,
-    page: 1,
-    perPage: 10,
-    content: ""
+    ...DEFAULT_LOCATION, ...DEFAULT_INFO
   });
 
-  const { data, isFetching } = useQuery<ResponseSearchList>({
-    queryKey: ['markers', locationTrigger], queryFn: () => getSearch(locationTrigger), initialData: {
-      page: 1,
-      size: 0,
-      list: [],
-      markers: []
-    }
-  });
-  const { mapInstance, targetEle, location, focusParkingLot, setPosition, onChangeLocation, onClickMarker, setFocusParkingLot } = useMap({ markers: data.markers });
+  const { data, isLoading } = useSearchQuery(locationTrigger);
+
+  const { mapInstance, targetEle, location, focusParkingLot, setPosition, onChangeLocation, onClickMarker, setFocusParkingLot } = useMap({ markers: data?.markers || [] });
+
+  const { ref } = useIntersect(() => {
+    if (isLoading) return;
+
+    setLocationTrigger(preV => ({ ...preV, page: preV.page + 1 }));
+  }, 0.1);
 
   useEffect(() => {
-    setLocationTrigger((preValue: SearchParkList) => ({ ...preValue, ...location }));
+    setLocationTrigger(() => ({...location, ...DEFAULT_INFO }));
     setFocusParkingLot(null);
   }, [location.lat, location.lot])
 
@@ -49,20 +44,21 @@ function App() {
     <Container>
       <MapContainer>
         <Map ref={targetEle} />
-        <Nav setPosition={setPosition} onChangeLocation={onChangeLocation} isLoading={isFetching} />
+        <Nav setPosition={setPosition} onChangeLocation={onChangeLocation} isLoading={isLoading} />
       </MapContainer>
       {
-        focusParkingLot !== null && <DetailContainer>
+        focusParkingLot !== null && data && <DetailContainer>
           <CloseButton onClick={handleClickCloseDetail}>
             <IoIosArrowForward size={60} />
           </CloseButton>
-          <Detail info={data.markers[focusParkingLot]} /></DetailContainer>
+          <Detail info={data.markers[focusParkingLot]} />
+        </DetailContainer>
       }
       <SideContainer>
         <Logo />
         <SearchBar setLocationTrigger={setLocationTrigger} />
-        <ResultCount>총 {data.size}개의 검색 결과가 있습니다.</ResultCount>
-        <List markers={data.list} setSelectPark={setFocusParkingLot} setPosition={setPosition} onClickMarker={onClickMarker} />
+        <ResultCount>총 {data?.size}개의 검색 결과가 있습니다.</ResultCount>
+        <List isLoading={isLoading} markers={data?.list || []} setSelectPark={setFocusParkingLot} setPosition={setPosition} onClickMarker={onClickMarker} ref={ref} />
       </SideContainer>
     </Container >
   )

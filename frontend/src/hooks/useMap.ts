@@ -1,20 +1,15 @@
 import { useEffect, useState, useRef } from 'react';
-import { PER_RANGE } from '../Constant';
+import { PER_RANGE, DEFAULT_LOCATION } from '../Constant';
 import { ParkingLot } from '../types/ParkingLot';
 
 interface UseMapTypes {
     markers: Array<ParkingLot>
 }
 
-const DEFAULT_LOCATION = {
-    lat: 35.87093386685083,
-    lot: 128.59394073486328
-}
-
 export const useMap = (props: UseMapTypes) => {
     const targetEle = useRef<HTMLDivElement | null>(null);
     const mapInstance = useRef<naver.maps.Map>();
-    const [location, setLocation] = useState({ ...DEFAULT_LOCATION, range: 500 });
+    const [location, setLocation] = useState(DEFAULT_LOCATION);
     const [markerIns, setMarkerIns] = useState<Array<naver.maps.Marker>>([]);
     const [markerClickEvents, setMarkerClickEvents] = useState<Array<naver.maps.MapEventListener>>();
     const [focusParkingLot, setFocusParkingLot] = useState<number | null>(null)

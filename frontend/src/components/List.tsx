@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, forwardRef } from 'react';
 import styled from '@emotion/styled';
 import { ParkingLot } from '../types/ParkingLot';
 
@@ -7,9 +7,10 @@ interface ListProps {
     setSelectPark: Dispatch<SetStateAction<number | null>>;
     setPosition: (lat: number, lot: number) => void
     onClickMarker: (index: number) => void
+    isLoading: boolean
 }
 
-export const List = ({ markers, setSelectPark, setPosition, onClickMarker }: ListProps) => {
+export const List = forwardRef(({ markers, setSelectPark, setPosition, onClickMarker, isLoading }: ListProps, ref: any) => {
     const handleClickParkingLot = (index: number) => {
         setSelectPark(index);
         onClickMarker(index);
@@ -18,31 +19,37 @@ export const List = ({ markers, setSelectPark, setPosition, onClickMarker }: Lis
 
     return <Container className='scroll-y'>
         {
-            markers.map((marker, i) => {
-                return <ItemContainer key={marker.id}>
-                    <TitleWrap onClick={() => handleClickParkingLot(i)}>
-                        <div className='title'>{marker.name}</div>
-                        <div className='type'>{marker.division}</div>
-                    </TitleWrap>
-                    <AdreessContainer>
-                        <div>{marker.locationAddress}</div>
-                        <div>{marker.streetAddress}</div>
-                    </AdreessContainer>
-                    <TimeContainer>
-                        <div>
-                            <span>요금 :</span>
-                            <Price price={marker.priceInformation}>{marker.priceInformation}</Price>
-                        </div>
-                        <div>
-                            <span>요금 :</span>
-                            <p>{marker.operatingDay}</p>
-                        </div>
-                    </TimeContainer>
-                </ItemContainer>
-            })
+            markers.length > 0 || !isLoading ?
+                <>
+                    {markers.map((marker, i) => {
+                        return <ItemContainer key={marker.id}>
+                            <TitleWrap onClick={() => handleClickParkingLot(i)}>
+                                <div className='title'>{marker.name}</div>
+                                <div className='type'>{marker.division}</div>
+                            </TitleWrap>
+                            <AdreessContainer>
+                                <div>{marker.locationAddress}</div>
+                                <div>{marker.streetAddress}</div>
+                            </AdreessContainer>
+                            <TimeContainer>
+                                <div>
+                                    <span>요금 :</span>
+                                    <Price price={marker.priceInformation}>{marker.priceInformation}</Price>
+                                </div>
+                                <div>
+                                    <span>요금 :</span>
+                                    <p>{marker.operatingDay}</p>
+                                </div>
+                            </TimeContainer>
+                        </ItemContainer>
+                    })}
+                    <ScrollTarget ref={ref} />
+                </>
+                :
+                <div>로딩중</div>
         }
     </Container>
-}
+});
 
 const Container = styled.div`
     height: 100%;
@@ -98,4 +105,7 @@ const TimeContainer = styled.div`
 
 const Price = styled.p<{ price: string }>`
     color: ${({ price }) => price === '유료' ? 'red' : 'black'};
+`;
+
+const ScrollTarget = styled.div`
 `;

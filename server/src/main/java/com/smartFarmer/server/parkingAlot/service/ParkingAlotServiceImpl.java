@@ -24,27 +24,30 @@ public class ParkingAlotServiceImpl implements ParkingAlotService {
 
         List<ParkingAlotEntity> result = parkingAlotRepository.findAll(SearchSpecification.search(p));
 
-        List<List<ParkingAlotEntity>> pagination = setPagination(result, p.getPerPage());
+        List<List<ParkingAlotEntity>> pagination = setPagination(result, p.getPage(), p.getPerPage());
 
         if (result.size() == 0) {
-           return ResponseEntity.ok()
-                    .body(new ResponseParkingLot(p.getPage(), result.size(), result , result));
+            return ResponseEntity.ok()
+                    .body(new ResponseParkingLot(p.getPage(), result.size(), result, result));
         }
 
-         return ResponseEntity.ok()
-                    .body(new ResponseParkingLot(p.getPage(), result.size(), pagination.get(0), result));
+        return ResponseEntity.ok()
+                .body(new ResponseParkingLot(p.getPage(), result.size(), pagination.get(0), result));
 
     }
 
-    private static List<List<ParkingAlotEntity>> setPagination(List<ParkingAlotEntity> list, int perPage) {
+    private static List<List<ParkingAlotEntity>> setPagination(List<ParkingAlotEntity> list, int page, int perPage) {
         List<List<ParkingAlotEntity>> sublists = new ArrayList<>();
 
-        for (int i = 0; i < Math.ceil((double) list.size() / perPage); i++) {
-            if (i == list.size() / perPage) {
-                sublists.add(list.subList(i * perPage, (i * perPage) + Math.round(list.size() % perPage)));
-            } else {
-                sublists.add(list.subList(i * perPage, (i + 1) * perPage));
-            }
+        if (list.size() == 0)
+            return sublists;
+
+        if (page == Math.ceil((double) list.size() / perPage)) {
+            sublists.add(list.subList(0, ((page - 1) * perPage) + Math.round(list.size() % perPage)));
+        } else if (page * perPage >= list.size()) {
+            sublists.add(list.subList(page, list.size() - 1));
+        } else {
+            sublists.add(list.subList(0, (page) * perPage));
         }
 
         return sublists;
