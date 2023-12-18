@@ -26,8 +26,14 @@ public class ParkingAlotServiceImpl implements ParkingAlotService {
 
         List<List<ParkingAlotEntity>> pagination = setPagination(result, p.getPerPage());
 
-        return ResponseEntity.ok()
-                .body(new ResponseParkingLot(p.getPage(), result.size(), pagination.get(p.getPage() - 1), result));
+        if (result.size() == 0) {
+           return ResponseEntity.ok()
+                    .body(new ResponseParkingLot(p.getPage(), result.size(), result , result));
+        }
+
+         return ResponseEntity.ok()
+                    .body(new ResponseParkingLot(p.getPage(), result.size(), pagination.get(0), result));
+
     }
 
     private static List<List<ParkingAlotEntity>> setPagination(List<ParkingAlotEntity> list, int perPage) {
