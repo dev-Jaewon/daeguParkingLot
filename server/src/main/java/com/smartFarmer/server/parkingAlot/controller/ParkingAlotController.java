@@ -2,7 +2,7 @@ package com.smartFarmer.server.parkingAlot.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.smartFarmer.server.parkingAlot.dto.SearchRangeParkingAlotDto;
+import com.smartFarmer.server.parkingAlot.dto.SearchDto;
 import com.smartFarmer.server.parkingAlot.entity.ParkingAlotEntity;
 import com.smartFarmer.server.parkingAlot.service.ParkingAlotService;
 
@@ -14,16 +14,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+
 @RestController
-@RequestMapping("/parkingAlot")
+@RequestMapping("/parkingLot")
 public class ParkingAlotController {
 
     @Autowired
     private ParkingAlotService parkingAlotService;
 
-    @GetMapping("/list")
-    public ResponseEntity<List<ParkingAlotEntity>> getMethodName(@ModelAttribute SearchRangeParkingAlotDto searchRangeParkingAlotDto ) {
-        return parkingAlotService.getList(searchRangeParkingAlotDto);
+    @GetMapping("/search")
+    public ResponseEntity<List<ParkingAlotEntity>> getMethodName(@ModelAttribute SearchDto searchRangeParkingAlotDto ) {
+        return parkingAlotService.searchData(searchRangeParkingAlotDto);
     }
 
 }

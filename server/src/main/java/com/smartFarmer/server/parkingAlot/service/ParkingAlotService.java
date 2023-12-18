@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
-import com.smartFarmer.server.parkingAlot.dto.SearchRangeParkingAlotDto;
+import com.smartFarmer.server.parkingAlot.dto.SearchDto;
 import com.smartFarmer.server.parkingAlot.entity.ParkingAlotEntity;
 
 public interface ParkingAlotService {
-    public ResponseEntity<List<ParkingAlotEntity>> getList(SearchRangeParkingAlotDto serachParam);
+    public ResponseEntity<List<ParkingAlotEntity>> searchData(SearchDto serachParam);
 }

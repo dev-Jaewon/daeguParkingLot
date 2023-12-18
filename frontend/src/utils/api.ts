@@ -9,8 +9,8 @@ const api = axios.create({
     },
 });
 
-export const getParkList = async (searchParkList: SearchParkList) => {
-    return await api.get("http://localhost:8080/parkingAlot/list",{
+export const getSearch = async (searchParkList: SearchParkList) => {
+    return await api.get("http://localhost:8080/parkingLot/search",{
         params: searchParkList
     }).then(res => res.data);
 }

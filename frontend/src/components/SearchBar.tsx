@@ -1,12 +1,34 @@
-import styled from "@emotion/styled"
+import { useRef } from 'react';
+import styled from "@emotion/styled";
+import { Dispatch } from "react";
 import { IoSearch } from "react-icons/io5";
 
-export const SearchBar = () => {
+interface SearchBarType {
+    setLocationTrigger: Dispatch<any>
+}
+
+export const SearchBar = (props: SearchBarType) => {
+    const inputValue = useRef<string>("");
+
+    const handleClickSearch = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        props.setLocationTrigger((preValue: any) => ({ ...preValue, content: inputValue.current }));
+    }
+
+    const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        inputValue.current = e.target.value;
+    }
+
+    const handleClickForm = () => {
+        props.setLocationTrigger((preValue: any) => ({ ...preValue, content: inputValue.current }));
+    }
+
     return (
         <Container>
-            <Input>
-                <input type="text" />
-                <IoSearch size={30}/>
+            <Input onSubmit={handleClickSearch} onClick={handleClickForm}>
+                <input type="text" onChange={handleChangeInput} />
+                <IoSearch size={30} />
             </Input>
         </Container>
     )
@@ -19,7 +41,7 @@ const Container = styled.div`
     background: #717cff;
 `;
 
-const Input = styled.div`
+const Input = styled.form`
     display:flex;
     align-items: center;
     border-radius: 4px;
@@ -39,5 +61,6 @@ const Input = styled.div`
 
     svg {
         margin: 5px 10px 5px auto;
+        cursor: pointer;
     }
 `;

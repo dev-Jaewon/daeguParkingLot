@@ -1,0 +1,35 @@
+export interface ParkingLot {
+    id: number;
+    manageNum: string;
+    name: string;
+    division: string;
+    type: string;
+    streetAddress: string;
+    locationAddress: string;
+    areaNum: string;
+    paperFeed: string;
+    endMember: string;
+    operatingDay: string;
+    operatingStartTime: string;
+    operatingEndTime: string;
+    operatingSatStartTime: string;
+    operatingSatEndTime: string;
+    operatingHolidayStartTime: string;
+    operatingHolidayEndTime: string;
+    priceInformation: string;
+    basicTime: string;
+    dayPriceTime: number;
+    payment: string;
+    otherMatters: string;
+    managementAgency: string;
+    telNumber: string;
+    lat: string;
+    lot: string;
+    theDisabled: string;
+    updatedAt: string;
+    nomalPrice: number;
+    perTime: number;
+    perPrice: number;
+    dayPrice: number;
+    regularPrice: number;
+}

@@ -2,19 +2,17 @@ package com.smartFarmer.server.parkingAlot.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import com.smartFarmer.server.parkingAlot.entity.ParkingAlotEntity;
 
 @Repository
-public interface ParkingAlotRepository extends JpaRepository<ParkingAlotEntity, Long> {
+public interface ParkingAlotRepository
+        extends JpaRepository<ParkingAlotEntity, Long>, JpaSpecificationExecutor<ParkingAlotEntity> {
 
-    @Query(value = "select * FROM parkingalot " +
-            "WHERE ST_DWithin ( " +
-            "geography ( ST_SetSRID ( ST_Point ( lot , lat ) , 4326 ) ) ," +
-            "geography ( ST_SetSRID ( ST_Point ( :lot , :lat ) , 4326 ) ) , :range )", nativeQuery = true)
-    public List<ParkingAlotEntity>findByRangeParkingAlot (double lat, double lot, int range);
-
+    List<ParkingAlotEntity> findAll(Pageable pageable, Specification<ParkingAlotEntity> spec);
 }
