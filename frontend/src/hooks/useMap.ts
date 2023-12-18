@@ -78,9 +78,6 @@ export const useMap = (props: UseMapTypes) => {
         if (t.getMap()) {
             t.close();
         } else {
-            const { x, y } = markerIns[index].getPosition();
-
-            setPosition(y, x);
             setFocusParkingLot(index);
             t.open(mapInstance.current, markerIns[index]);
         }
