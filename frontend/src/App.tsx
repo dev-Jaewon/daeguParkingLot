@@ -9,10 +9,11 @@ import { Nav } from './components/Nav';
 import { Logo } from './components/Logo';
 import { SearchBar } from './components/SearchBar';
 import { IoIosArrowForward } from "react-icons/io";
+import { ResponseSearchList } from './types/ResponseSearchList';
+import { SearchParkList } from './types/SearchParkList';
 
 function App() {
-  // const [data, setData] = useState(null);
-  const [locationTrigger, setLocationTrigger] = useState<any>({
+  const [locationTrigger, setLocationTrigger] = useState<SearchParkList>({
     lat: 0,
     lot: 0,
     range: 0,
@@ -21,11 +22,18 @@ function App() {
     content: ""
   });
 
-  const rangeData = useQuery<any>({ queryKey: ['markers', locationTrigger], queryFn: () => getSearch(locationTrigger), initialData: [] });
-  const { mapInstance, targetEle, location, focusParkingLot, setPosition, onChangeLocation, onClickMarker, setFocusParkingLot } = useMap({ markers: rangeData.data });
+  const { data, isFetching } = useQuery<ResponseSearchList>({
+    queryKey: ['markers', locationTrigger], queryFn: () => getSearch(locationTrigger), initialData: {
+      page: 1,
+      size: 0,
+      list: [],
+      markers: []
+    }
+  });
+  const { mapInstance, targetEle, location, focusParkingLot, setPosition, onChangeLocation, onClickMarker, setFocusParkingLot } = useMap({ markers: data.markers });
 
   useEffect(() => {
-    setLocationTrigger((preValue: any) => ({ ...preValue, ...location }));
+    setLocationTrigger((preValue: SearchParkList) => ({ ...preValue, ...location }));
     setFocusParkingLot(null);
   }, [location.lat, location.lot])
 
@@ -41,20 +49,20 @@ function App() {
     <Container>
       <MapContainer>
         <Map ref={targetEle} />
-        <Nav setPosition={setPosition} onChangeLocation={onChangeLocation} isLoading={rangeData.isFetching} />
+        <Nav setPosition={setPosition} onChangeLocation={onChangeLocation} isLoading={isFetching} />
       </MapContainer>
       {
         focusParkingLot !== null && <DetailContainer>
           <CloseButton onClick={handleClickCloseDetail}>
             <IoIosArrowForward size={60} />
           </CloseButton>
-          <Detail info={rangeData.data[focusParkingLot]} /></DetailContainer>
+          <Detail info={data.markers[focusParkingLot]} /></DetailContainer>
       }
       <SideContainer>
         <Logo />
         <SearchBar setLocationTrigger={setLocationTrigger} />
-        <ResultCount>총 100개의 검색 결과가 있습니다.</ResultCount>
-        <List markers={rangeData.data} setSelectPark={setFocusParkingLot} setPosition={setPosition} onClickMarker={onClickMarker} />
+        <ResultCount>총 {data.size}개의 검색 결과가 있습니다.</ResultCount>
+        <List markers={data.list} setSelectPark={setFocusParkingLot} setPosition={setPosition} onClickMarker={onClickMarker} />
       </SideContainer>
     </Container >
   )

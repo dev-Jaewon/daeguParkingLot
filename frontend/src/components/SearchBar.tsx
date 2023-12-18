@@ -1,10 +1,11 @@
-import { useRef } from 'react';
+import { useRef, SetStateAction } from 'react';
 import styled from "@emotion/styled";
 import { Dispatch } from "react";
 import { IoSearch } from "react-icons/io5";
+import { SearchParkList } from '../types/SearchParkList';
 
 interface SearchBarType {
-    setLocationTrigger: Dispatch<any>
+    setLocationTrigger: Dispatch<SetStateAction<SearchParkList>>
 }
 
 export const SearchBar = (props: SearchBarType) => {
@@ -13,7 +14,7 @@ export const SearchBar = (props: SearchBarType) => {
     const handleClickSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        props.setLocationTrigger((preValue: any) => ({ ...preValue, content: inputValue.current }));
+        props.setLocationTrigger((preValue: SearchParkList) => ({ ...preValue, content: inputValue.current }));
     }
 
     const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,7 +22,7 @@ export const SearchBar = (props: SearchBarType) => {
     }
 
     const handleClickForm = () => {
-        props.setLocationTrigger((preValue: any) => ({ ...preValue, content: inputValue.current }));
+        props.setLocationTrigger((preValue: SearchParkList) => ({ ...preValue, content: inputValue.current }));
     }
 
     return (

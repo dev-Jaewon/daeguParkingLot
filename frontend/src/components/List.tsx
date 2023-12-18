@@ -1,8 +1,10 @@
-import styled from '@emotion/styled'
+import { Dispatch, SetStateAction } from 'react';
+import styled from '@emotion/styled';
+import { ParkingLot } from '../types/ParkingLot';
 
 interface ListProps {
-    markers: Array<any>
-    setSelectPark: any;
+    markers: Array<ParkingLot>
+    setSelectPark: Dispatch<SetStateAction<number | null>>;
     setPosition: (lat: number, lot: number) => void
     onClickMarker: (index: number) => void
 }
@@ -11,7 +13,7 @@ export const List = ({ markers, setSelectPark, setPosition, onClickMarker }: Lis
     const handleClickParkingLot = (index: number) => {
         setSelectPark(index);
         onClickMarker(index);
-        setPosition(markers[index].lat, markers[index].lot);
+        setPosition(Number(markers[index].lat), Number(markers[index].lot));
     }
 
     return <Container className='scroll-y'>

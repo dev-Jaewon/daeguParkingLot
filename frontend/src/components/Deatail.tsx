@@ -2,9 +2,10 @@ import styled from '@emotion/styled';
 import { MdLocationOn, MdAccessTimeFilled, MdMessage } from "react-icons/md";
 import { IoPricetag } from "react-icons/io5";
 import { Reviews } from './Reviews';
+import { ParkingLot } from '../types/ParkingLot';
 
 interface DetailProps {
-    info: any
+    info: ParkingLot
 }
 
 export const Detail = ({ info }: DetailProps) => {
@@ -23,7 +24,7 @@ export const Detail = ({ info }: DetailProps) => {
         </Info>}
         {info.operatingDay && <Info>
             <MdAccessTimeFilled size={'20px'} />
-            <p>{info.operatingDay.replaceAll("+", ", ") + " 이용가능"}</p>
+            <p>{info.operatingDay.replace(/\+/, ", ") + " 이용가능"}</p>
         </Info>}
         <DetailInfo>
             <span>평일 :</span>
@@ -65,7 +66,7 @@ export const Detail = ({ info }: DetailProps) => {
         {info.payment &&
             <DetailInfo>
                 <span>결제방법 :</span>
-                <p>{info.payment.replaceAll("+", ", ")}</p>
+                <p>{info.payment.replace(/\+/, ", ")}</p>
             </DetailInfo>
         }
         <Divider />
@@ -75,7 +76,7 @@ export const Detail = ({ info }: DetailProps) => {
         </Info>
         {info.otherMatters && <DetailInfo>
             <span>-</span>
-            <p>{info.otherMatters.replaceAll("+", ", ")}</p>
+            <p>{info.otherMatters.replace(/\+/, ", ")}</p>
         </DetailInfo>}
         <DetailInfo>
             <span>- 관리기관 :</span>

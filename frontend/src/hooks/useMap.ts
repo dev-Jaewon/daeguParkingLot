@@ -1,8 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
 import { PER_RANGE } from '../Constant';
+import { ParkingLot } from '../types/ParkingLot';
 
 interface UseMapTypes {
-    markers: Array<{ lat: number, lot: number }>
+    markers: Array<ParkingLot>
 }
 
 const DEFAULT_LOCATION = {
@@ -49,7 +50,7 @@ export const useMap = (props: UseMapTypes) => {
         const markerInsList = <Array<naver.maps.Marker>>[];
 
         for (let marker of props.markers) {
-            markerInsList.push(createMarkerInstance(marker.lat, marker.lot));
+            markerInsList.push(createMarkerInstance(Number(marker.lat), Number(marker.lot)));
         }
 
         clearMarkerForMap();
