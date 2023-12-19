@@ -11,4 +11,5 @@ import com.smartFarmer.server.auth.entity.AccountEntity;
 public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
     public List<AccountEntity> findAll();
     public AccountEntity findByEmail(String email);
+    public AccountEntity findByNickname(String nickname);
 }

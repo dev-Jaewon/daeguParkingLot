@@ -25,8 +25,12 @@ public class AuthController {
     }
 
     @GetMapping("/check/email/{email}")
-    public ResponseEntity<Boolean> getMethodName(@PathVariable("email") String email) {
+    public ResponseEntity<Boolean> checkEmail(@PathVariable("email") String email) {
         return accountService.checkEmail(email);
     }
     
+    @GetMapping("/check/nickname/{nickname}")
+    public ResponseEntity<Boolean> checkNickName(@PathVariable("nickname") String nickname) {
+        return accountService.checkNickName(nickname);
+    }
 }

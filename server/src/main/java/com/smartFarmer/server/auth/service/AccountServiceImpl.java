@@ -34,4 +34,10 @@ public class AccountServiceImpl implements AccountService {
 
         return ResponseEntity.ok().body(res == null);
     }
+
+    public ResponseEntity<Boolean> checkNickName(String nickname){
+        AccountEntity res = accountRepository.findByNickname(nickname);
+
+        return ResponseEntity.ok().body(res == null);
+    }
 }
