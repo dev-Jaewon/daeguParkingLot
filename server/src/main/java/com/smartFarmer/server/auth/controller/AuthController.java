@@ -9,19 +9,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
-@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
     private AccountService accountService;
 
-    @PostMapping("/signup")
+    @PostMapping("/auth/signup")
     public ResponseEntity<String> signUp(@RequestBody RequestSignupDto requestSignupDto) {
         return accountService.signup(requestSignupDto);
+    }
+
+    @GetMapping("/check/email/{email}")
+    public ResponseEntity<Boolean> getMethodName(@PathVariable("email") String email) {
+        return accountService.checkEmail(email);
     }
     
 }

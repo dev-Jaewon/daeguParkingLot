@@ -6,4 +6,5 @@ import com.smartFarmer.server.auth.dto.RequestSignupDto;
 
 public interface AccountService {
     public ResponseEntity<String> signup(RequestSignupDto requestSignupDto);    
+    public ResponseEntity<Boolean> checkEmail(String email);
 }

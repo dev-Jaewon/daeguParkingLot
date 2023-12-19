@@ -28,4 +28,10 @@ public class AccountServiceImpl implements AccountService {
 
         return ResponseEntity.ok().body(null);
     }
+
+    public ResponseEntity<Boolean> checkEmail(String email){
+        AccountEntity res = accountRepository.findByEmail(email);
+
+        return ResponseEntity.ok().body(res == null);
+    }
 }
