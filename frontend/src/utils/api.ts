@@ -14,3 +14,11 @@ export const getSearch = async (searchParkList: SearchParkList) => {
         params: searchParkList
     }).then(res => res.data);
 }
+
+export const checkEmail = async (email: string) => {
+    return await api.get(`http://localhost:8080/check/email/${email}`).then(res => res.data);
+}
+
+export const checkNickName = async (nickname: string) => {
+    return await api.get(`http://localhost:8080/check/nickname/${nickname}`).then(res => res.data);
+}
