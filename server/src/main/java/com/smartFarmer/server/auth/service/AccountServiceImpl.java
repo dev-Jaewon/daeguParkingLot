@@ -1,9 +1,8 @@
 package com.smartFarmer.server.auth.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.smartFarmer.server.auth.dto.RequestSignupDto;
@@ -14,28 +13,34 @@ import com.smartFarmer.server.auth.repository.AccountRepository;
 public class AccountServiceImpl implements AccountService {
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private AccountRepository accountRepository;
 
-    public ResponseEntity<String> signup(RequestSignupDto requestSignupDto) {
+    public ResponseEntity<Boolean> signup(RequestSignupDto requestSignupDto) {
 
-        AccountEntity signupInfo = new AccountEntity(null, requestSignupDto.getEmail(), requestSignupDto.getPassword(), requestSignupDto.getNickName(), "USER");
+        String encodePassword = passwordEncoder.encode(requestSignupDto.getPassword());
+
+        AccountEntity signupInfo = new AccountEntity(null, requestSignupDto.getEmail(), encodePassword,
+                requestSignupDto.getNickName(), "USER");
 
         try {
             accountRepository.save(signupInfo);
         } catch (Exception e) {
-            System.out.println(e);
+            return ResponseEntity.status(409).body(false);
         }
 
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok().body(true);
     }
 
-    public ResponseEntity<Boolean> checkEmail(String email){
+    public ResponseEntity<Boolean> checkEmail(String email) {
         AccountEntity res = accountRepository.findByEmail(email);
 
         return ResponseEntity.ok().body(res == null);
     }
 
-    public ResponseEntity<Boolean> checkNickName(String nickname){
+    public ResponseEntity<Boolean> checkNickName(String nickname) {
         AccountEntity res = accountRepository.findByNickname(nickname);
 
         return ResponseEntity.ok().body(res == null);

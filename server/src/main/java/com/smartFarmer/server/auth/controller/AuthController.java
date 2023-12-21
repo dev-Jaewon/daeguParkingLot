@@ -20,7 +20,7 @@ public class AuthController {
     private AccountService accountService;
 
     @PostMapping("/auth/signup")
-    public ResponseEntity<String> signUp(@RequestBody RequestSignupDto requestSignupDto) {
+    public ResponseEntity<Boolean> signUp(@RequestBody RequestSignupDto requestSignupDto) {
         return accountService.signup(requestSignupDto);
     }
 
