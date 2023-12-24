@@ -25,7 +25,7 @@ export const SignUp = () => {
 
     const mutation = useMutation({
         mutationFn: (signupData: SignUpType) => signup(signupData),
-        onSuccess: (result: boolean) => navigate("/auth/login")
+        onSuccess: () => navigate("/auth/login")
     })
 
     const handleSubmitSinup = (data: SignUpType) => {
@@ -38,6 +38,10 @@ export const SignUp = () => {
 
     const nickNameValidate = (value: string): boolean | string => {
         return NICK_NAME_REG.test(value) || '최소 2글자 이상 입력해주세요.'
+    }
+
+    const handleClickCancel = () => {
+        navigate("/auth/login")
     }
 
     useEffect(() => {
@@ -119,9 +123,50 @@ export const SignUp = () => {
                 }
                 rules={{ validate: (v) => nickNameValidate(v), required: '닉네임을 입력해주세요.' }}
             />
-            <LoadingButton value='클릭' isLoading={mutation.isPending} />
+            <LoadingButton value='회원가입' isLoading={mutation.isPending} />
         </form>
+        <CancelButton onClick={handleClickCancel}>취소</CancelButton>
     </Container>
 }
 
-const Container = styled.div``;
+const Container = styled.div`
+    position: relative;
+    padding: 30px 20px;
+    top:50%;
+    left:50%;
+    width: 400px;
+    border-radius: 18px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
+    transform: translate(-50%, -50%);
+
+
+    & > form {
+        flex-direction: column;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    button {
+        margin-top: 40px;
+        width: 380px;
+        height: 45px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+`;
+
+const CancelButton = styled.button`
+    position: relative;
+    left: 50%;
+    margin-top: 40px;
+    width: 380px;
+    height: 45px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+`;
