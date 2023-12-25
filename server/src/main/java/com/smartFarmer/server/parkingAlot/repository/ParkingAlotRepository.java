@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import com.smartFarmer.server.parkingAlot.entity.ParkingAlotEntity;
+import com.smartFarmer.server.parkingAlot.entity.ParkingLotEntity;
 
 @Repository
 public interface ParkingAlotRepository
-        extends JpaRepository<ParkingAlotEntity, Long>, JpaSpecificationExecutor<ParkingAlotEntity> {
+        extends JpaRepository<ParkingLotEntity, Long>, JpaSpecificationExecutor<ParkingLotEntity> {
 
-    List<ParkingAlotEntity> findAll(Specification<ParkingAlotEntity> spec);
+    List<ParkingLotEntity> findAll(Specification<ParkingLotEntity> spec);
 }

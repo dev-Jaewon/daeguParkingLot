@@ -11,7 +11,7 @@ import org.postgis.Point;
 
 import com.smartFarmer.server.parkingAlot.dto.SearchDetail;
 import com.smartFarmer.server.parkingAlot.dto.SearchDto;
-import com.smartFarmer.server.parkingAlot.entity.ParkingAlotEntity;
+import com.smartFarmer.server.parkingAlot.entity.ParkingLotEntity;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Expression;
@@ -19,7 +19,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
 public class SearchSpecification {
-    public static Specification<ParkingAlotEntity> search(SearchDto p) {
+    public static Specification<ParkingLotEntity> search(SearchDto p) {
         return (root, cq, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -39,7 +39,7 @@ public class SearchSpecification {
         };
     }
 
-    private static Expression<Geometry> geo(Root<ParkingAlotEntity> root, CriteriaBuilder builder, Expression<?> lat, Expression<?> lot) {
+    private static Expression<Geometry> geo(Root<ParkingLotEntity> root, CriteriaBuilder builder, Expression<?> lat, Expression<?> lot) {
         Expression<Point> point = builder.function("ST_Point", Point.class, lot, lat);
         Expression<Point> centerPoint = builder.function("ST_SetSRID", Point.class, point, builder.literal(4326));
 
@@ -50,7 +50,7 @@ public class SearchSpecification {
         return "%" + value + "%";
     }
 
-    private static List<Predicate> detailPredicates(Root<ParkingAlotEntity> root, CriteriaBuilder builder, SearchDetail searchInfo){
+    private static List<Predicate> detailPredicates(Root<ParkingLotEntity> root, CriteriaBuilder builder, SearchDetail searchInfo){
         List<Predicate> predicates = new ArrayList<>();
 
             if (searchInfo.getDong() != null) {
