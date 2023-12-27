@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 
 @RestController
 @RequestMapping("/parkingLot")
@@ -21,8 +21,14 @@ public class ParkingAlotController {
     private ParkingAlotService parkingAlotService;
 
     @GetMapping("/search")
-    public ResponseEntity<ResponseParkingLot> getMethodName(@ModelAttribute SearchDto searchRangeParkingAlotDto ) {
+    public ResponseEntity<ResponseParkingLot> getMethodName(@ModelAttribute SearchDto searchRangeParkingAlotDto) {
+
         return parkingAlotService.searchData(searchRangeParkingAlotDto);
+    }
+
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<String> getDetailInfo(@PathVariable("id") String id) {
+        return ResponseEntity.ok().body("null");
     }
 
 }

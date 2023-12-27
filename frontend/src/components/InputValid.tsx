@@ -30,23 +30,22 @@ export const InputValid = forwardRef<HTMLInputElement, InpuValidType>(({ icon, v
 })
 
 const Container = styled.div`
-    padding: 10px 20px;
     display: flex;
     flex-direction: column;
+    width: 100%;
 
     svg {
-        width: 30px;
-        height: 30px;
+        width: 25px;
+        height: 25px;
     }
 
     input {
-        width: 100%;
-        padding: 0 15px;
-        margin: 5px 0;
         border: none;
-        font-size: 1.4rem;
+        font-size: 1rem;
         font-weight: 500;
         color: #3b3b3b;
+        background-color: #ededed;
+        line-height: 25px;
 
         &:focus{
             outline: none;
@@ -61,10 +60,14 @@ const Container = styled.div`
 const ContentContainer = styled.div`
     display: flex;
     align-items: center;
+    background-color: #ededed;
+    border-radius: 8px;
+    margin: 0 10px;
+    padding: 10px 15px;
+    gap: 10px;
 `;
 
 const Divider = styled.div`
-    border-bottom: 1px solid #858585;
 `;
 
 const Message = styled.div`
@@ -72,4 +75,5 @@ const Message = styled.div`
     font-size: 0.8rem;
     color: red;
     font-weight: 400;
+    padding-left: 10px;
 `;

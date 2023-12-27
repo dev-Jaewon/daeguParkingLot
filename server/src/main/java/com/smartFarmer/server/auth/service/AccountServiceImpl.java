@@ -1,13 +1,32 @@
 package com.smartFarmer.server.auth.service;
 
+import java.util.Set;
+import java.util.HashSet;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.WebUtils;
 
+import com.smartFarmer.server.auth.dto.RequestLoginDto;
 import com.smartFarmer.server.auth.dto.RequestSignupDto;
 import com.smartFarmer.server.auth.entity.AccountEntity;
+import com.smartFarmer.server.auth.entity.RefreshTokenEntity;
+import com.smartFarmer.server.auth.entity.RolesEntity;
 import com.smartFarmer.server.auth.repository.AccountRepository;
+import com.smartFarmer.server.auth.repository.RolesRepository;
+import com.smartFarmer.server.configuration.JwtProvider;
+import com.smartFarmer.server.configuration.service.UserDetailsImpl;
+import com.smartFarmer.server.constance.Roles;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -18,20 +37,86 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public ResponseEntity<Boolean> signup(RequestSignupDto requestSignupDto) {
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private RolesRepository rolesRepository;
+
+    @Autowired
+    private JwtProvider jwtProvider;
+
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
+    public ResponseEntity<Void> signup(RequestSignupDto requestSignupDto) {
 
         String encodePassword = passwordEncoder.encode(requestSignupDto.getPassword());
 
-        AccountEntity signupInfo = new AccountEntity(null, requestSignupDto.getEmail(), encodePassword,
-                requestSignupDto.getNickName(), "USER");
+        AccountEntity signupInfo = new AccountEntity(requestSignupDto.getEmail(), encodePassword,
+                requestSignupDto.getNickName());
 
-        try {
-            accountRepository.save(signupInfo);
-        } catch (Exception e) {
-            return ResponseEntity.status(409).body(false);
+        Set<RolesEntity> role = new HashSet<>();
+
+        RolesEntity findRole = rolesRepository.findByName(Roles.ROLE_USER);
+
+        if (findRole == null) {
+            return ResponseEntity.ok().body(null);
         }
 
-        return ResponseEntity.ok().body(true);
+        role.add(findRole);
+        signupInfo.setRoles(role);
+        accountRepository.save(signupInfo);
+
+        return ResponseEntity.ok().body(null);
+
+    }
+
+    public ResponseEntity<String> login(RequestLoginDto loginInfo) {
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(loginInfo.getEmail(),
+                        loginInfo.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        ResponseCookie jwtCookie = jwtProvider.generateJwtCookie(userDetails.getUsername());
+
+        RefreshTokenEntity refreshToken = refreshTokenService.createToken(userDetails.getId());
+
+        ResponseCookie jwtRefreshCookie = jwtProvider.generateRefreshJwtCookie(refreshToken.getToken());
+
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString())
+                .body(null);
+    }
+
+    public ResponseEntity<?> refreshToken(HttpServletRequest request) {
+        String refreshToken = WebUtils.getCookie(request, "refreshCookie").getValue();
+
+        return refreshTokenService
+                .findFromRepo(refreshToken)
+                .map(refreshTokenService::checkExpired)
+                .map(RefreshTokenEntity::getAccount)
+                .map(account -> {
+                    ResponseCookie accessToken = jwtProvider.generateJwtCookie(account.getEmail());
+
+                    return ResponseEntity
+                            .ok()
+                            .header(HttpHeaders.SET_COOKIE, accessToken.toString())
+                            .body("asdf");
+                })
+                .orElseThrow(() -> {
+                    System.out.println(111);
+                    return null;
+                });
+    }
+
+    public AccountEntity findByEmail(String email) {
+        return accountRepository.findByEmail(email);
     }
 
     public ResponseEntity<Boolean> checkEmail(String email) {
@@ -44,5 +129,9 @@ public class AccountServiceImpl implements AccountService {
         AccountEntity res = accountRepository.findByNickname(nickname);
 
         return ResponseEntity.ok().body(res == null);
+    }
+
+    public ResponseEntity<String> tokenRefresh(String token) {
+        return ResponseEntity.ok().body(null);
     }
 }

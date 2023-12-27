@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.smartFarmer.server.parkingAlot.dto.ResponseParkingLot;
 import com.smartFarmer.server.parkingAlot.dto.SearchDto;
-import com.smartFarmer.server.parkingAlot.entity.ParkingAlotEntity;
+import com.smartFarmer.server.parkingAlot.entity.ParkingLotEntity;
 import com.smartFarmer.server.parkingAlot.repository.ParkingAlotRepository;
 import com.smartFarmer.server.parkingAlot.repository.specification.SearchSpecification;
 
@@ -21,10 +21,10 @@ public class ParkingAlotServiceImpl implements ParkingAlotService {
 
     @Override
     public ResponseEntity<ResponseParkingLot> searchData(SearchDto p) {
+try{
+        List<ParkingLotEntity> result = parkingAlotRepository.findAll(SearchSpecification.search(p));
 
-        List<ParkingAlotEntity> result = parkingAlotRepository.findAll(SearchSpecification.search(p));
-
-        List<List<ParkingAlotEntity>> pagination = setPagination(result, p.getPage(), p.getPerPage());
+        List<List<ParkingLotEntity>> pagination = setPagination(result, p.getPage(), p.getPerPage());
 
         if (result.size() == 0) {
             return ResponseEntity.ok()
@@ -33,11 +33,14 @@ public class ParkingAlotServiceImpl implements ParkingAlotService {
 
         return ResponseEntity.ok()
                 .body(new ResponseParkingLot(p.getPage(), result.size(), pagination.get(0), result));
-
+    }catch(Exception e){
+        System.out.println(e);
+    }
+    return ResponseEntity.ok().body(null);
     }
 
-    private static List<List<ParkingAlotEntity>> setPagination(List<ParkingAlotEntity> list, int page, int perPage) {
-        List<List<ParkingAlotEntity>> sublists = new ArrayList<>();
+    private static List<List<ParkingLotEntity>> setPagination(List<ParkingLotEntity> list, int page, int perPage) {
+        List<List<ParkingLotEntity>> sublists = new ArrayList<>();
 
         if (list.size() == 0)
             return sublists;

@@ -4,9 +4,9 @@ import { getSearch } from '../utils/api';
 import { SearchParkList } from '../types/SearchParkList';
 
 export const useSearchQuery = (queryParam: SearchParkList) => {
-    const { data, isLoading, isFetching } = useQuery<ResponseSearchList>({
+    const { data, isLoading } = useQuery<ResponseSearchList>({
         queryKey: ['markers', queryParam], queryFn: () => getSearch(queryParam),placeholderData: previousData => previousData
     });
 
-    return {data, isLoading, isFetching}
+    return {data, isLoading}
 }
