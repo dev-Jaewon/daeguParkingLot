@@ -1,6 +1,8 @@
 package com.smartFarmer.server.comment.entity;
 
-import java.util.Date;
+import java.time.LocalDate;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.smartFarmer.server.auth.entity.AccountEntity;
 import com.smartFarmer.server.parkingAlot.entity.ParkingLotEntity;
@@ -37,7 +39,8 @@ public class CommentEntity {
     @JoinColumn(name = "parkinglot_id")
     private ParkingLotEntity parkingLot;
 
-    private Date createAt;
+    @DateTimeFormat(pattern = "DD-MM-YYYY")
+    private LocalDate createAt;
 
     public CommentEntity() {
     }

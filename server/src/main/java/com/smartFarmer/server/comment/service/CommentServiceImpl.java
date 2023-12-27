@@ -1,6 +1,6 @@
 package com.smartFarmer.server.comment.service;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +45,7 @@ public class CommentServiceImpl implements CommentService {
 
         Optional<ParkingLotEntity> parkingLot = parkingAlotRepository.findById(addInfo.getParkingLotId());
 
-        commentRepository.save(new CommentEntity(null, addInfo.getValue(), account, parkingLot.get(), new Date()));
+        commentRepository.save(new CommentEntity(null, addInfo.getValue(), account, parkingLot.get(), LocalDate.now()));
 
         return ResponseEntity.ok().body(null);
     }
