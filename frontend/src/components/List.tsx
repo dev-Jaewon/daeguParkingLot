@@ -37,7 +37,7 @@ export const List = forwardRef(({ markers, setSelectPark, setPosition, onClickMa
                                     <Price price={marker.priceInformation}>{marker.priceInformation}</Price>
                                 </div>
                                 <div>
-                                    <span>요금 :</span>
+                                    <span>요일 :</span>
                                     <p>{marker.operatingDay}</p>
                                 </div>
                             </TimeContainer>
