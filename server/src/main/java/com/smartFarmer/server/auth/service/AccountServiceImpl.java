@@ -26,6 +26,7 @@ import com.smartFarmer.server.configuration.JwtProvider;
 import com.smartFarmer.server.configuration.service.UserDetailsImpl;
 import com.smartFarmer.server.constance.Roles;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
@@ -94,7 +95,7 @@ public class AccountServiceImpl implements AccountService {
                 .body(null);
     }
 
-    public ResponseEntity<?> refreshToken(HttpServletRequest request) {
+    public ResponseEntity<Boolean> refreshToken(HttpServletRequest request) {
         String refreshToken = WebUtils.getCookie(request, "refreshCookie").getValue();
 
         return refreshTokenService
@@ -107,10 +108,9 @@ public class AccountServiceImpl implements AccountService {
                     return ResponseEntity
                             .ok()
                             .header(HttpHeaders.SET_COOKIE, accessToken.toString())
-                            .body("asdf");
+                            .body(true);
                 })
                 .orElseThrow(() -> {
-                    System.out.println(111);
                     return null;
                 });
     }
@@ -129,9 +129,5 @@ public class AccountServiceImpl implements AccountService {
         AccountEntity res = accountRepository.findByNickname(nickname);
 
         return ResponseEntity.ok().body(res == null);
-    }
-
-    public ResponseEntity<String> tokenRefresh(String token) {
-        return ResponseEntity.ok().body(null);
     }
 }

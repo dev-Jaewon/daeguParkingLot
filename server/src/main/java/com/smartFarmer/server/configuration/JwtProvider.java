@@ -26,6 +26,9 @@ public class JwtProvider {
     @Value("${jwt.jwtExpirationTime}")
     private int jwtExpirationTime;
 
+    @Value("${jwt.jwtRefreshExpirationMs}")
+    private int refreshTokenDurationMs;
+
     public JwtProvider() {
     };
 
@@ -46,12 +49,12 @@ public class JwtProvider {
     }
 
     public ResponseCookie generateJwtCookie(String email) {
-        String jwt = generateToken(email);
-        return generateCookie("accessCookie", jwt, "/api");
+        String jwt = generateToken(email, jwtExpirationTime);
+        return generateCookie("accessCookie", jwt, "/", jwtExpirationTime);
     }
 
     public ResponseCookie generateRefreshJwtCookie(String refreshToken) {
-        return generateCookie("refreshCookie", refreshToken, "/api/auth/refreshtoken");
+        return generateCookie("refreshCookie", refreshToken, "/auth/refresh", refreshTokenDurationMs);
     }
 
     public String getTokenFromHttp(HttpServletRequest request, String name) {
@@ -64,19 +67,19 @@ public class JwtProvider {
         }
     }
 
-    private String generateToken(String email) {
+    private String generateToken(String email, Integer time) {
         return Jwts.builder()
                 .subject(email)
-                .expiration(new Date(System.currentTimeMillis() + jwtExpirationTime))
+                .expiration(new Date(System.currentTimeMillis() + 60000 * time))
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .signWith(getSecretKey(), Jwts.SIG.HS256)
                 .compact();
     }
 
-    private ResponseCookie generateCookie(String cookieName, String value, String path) {
-        ResponseCookie cookie = ResponseCookie.from(cookieName, value)
-                .path("/")
-                .maxAge((long) (60 * 60 * 24 * 356.24 * 1000))
+    private ResponseCookie generateCookie(String cookieName, String cookieValue, String path, int time) {
+        ResponseCookie cookie = ResponseCookie.from(cookieName, cookieValue)
+                .path(path)
+                .maxAge(time * 60)
                 .secure(true)
                 .sameSite("None")
                 .httpOnly(true)

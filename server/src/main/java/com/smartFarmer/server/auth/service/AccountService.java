@@ -15,11 +15,9 @@ public interface AccountService {
 
     public ResponseEntity<Boolean> checkNickName(String nickname);
 
-    public ResponseEntity<String> tokenRefresh(String token);
-
     public ResponseEntity<String> login(RequestLoginDto loginInfo);
 
-    public ResponseEntity<?> refreshToken(HttpServletRequest request);
+    public ResponseEntity<Boolean> refreshToken(HttpServletRequest request);
 
     public AccountEntity findByEmail(String email);
 }

@@ -17,7 +17,7 @@ import com.smartFarmer.server.auth.repository.RefreshTokenRepository;
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Value("${jwt.jwtRefreshExpirationMs}")
-    private Long refreshTokenDurationMs;
+    private int refreshTokenDurationMs;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -37,7 +37,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         }
 
         refreshToken.setAccount(account.get());
-        refreshToken.setExpireDate(new Date(System.currentTimeMillis() + refreshTokenDurationMs));
+        refreshToken.setExpireDate(new Date(System.currentTimeMillis() + 60000 * refreshTokenDurationMs));
         refreshToken.setToken(UUID.randomUUID().toString());
 
         return refreshTokenRepository.save(refreshToken);
