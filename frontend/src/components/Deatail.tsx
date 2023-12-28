@@ -2,16 +2,15 @@ import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import { MdLocationOn, MdAccessTimeFilled, MdMessage } from "react-icons/md";
 import { IoPricetag } from "react-icons/io5";
-import { Reviews } from './Reviews';
+import { CommentList } from './CommentList';
 import { ParkingLot } from '../types/ParkingLot';
 import { getDetailInfo } from '../utils/api';
 
 interface DetailProps {
     info: ParkingLot,
-    parkingLotId?: string
 }
 
-export const Detail = ({ info, parkingLotId }: DetailProps) => {
+export const Detail = ({ info }: DetailProps) => {
     // const { data } = useQuery({
     //     queryKey: ['detail'], queryFn: () => getDetailInfo(parkingLotId)
     // });
@@ -98,7 +97,7 @@ export const Detail = ({ info, parkingLotId }: DetailProps) => {
             <p>{info.updatedAt}</p>
         </DetailInfo>
         <AricleEnd />
-        <Reviews />
+        <CommentList parkingLotId={info.id}/>
     </Container>
 }
 
