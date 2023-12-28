@@ -40,11 +40,11 @@ const Container = styled.div`
                 background:#00a5e5; 
                 border-radius:50em;
 
-                &:nth-child(2) {
+                &:nth-of-type(2) {
                     animation-delay:.1s;
                 }
 
-                &:nth-child(3) {
+                &:nth-of-type(3) {
                     animation-delay:.2s;
                 }
             }
