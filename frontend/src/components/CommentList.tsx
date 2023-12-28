@@ -15,8 +15,6 @@ export const CommentList = ({ parkingLotId }: CommentListType) => {
         queryKey: ['commentList', parkingLotId], queryFn: () => commentList(parkingLotId), initialData: []
     });
 
-    console.log(data)
-
     return <Container>
         <Title>Comment</Title>
         <WriteComment parkingLotId={parkingLotId} />

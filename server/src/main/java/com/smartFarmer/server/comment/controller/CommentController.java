@@ -23,7 +23,7 @@ public class CommentController {
     private CommentService commentService;
 
     @PostMapping("/write")
-    public ResponseEntity<String> write(@RequestBody RequestAddComment addInfo){
+    public ResponseEntity<String> write(@RequestBody RequestAddComment addInfo) throws Exception {
         return commentService.write(addInfo);
     }
 

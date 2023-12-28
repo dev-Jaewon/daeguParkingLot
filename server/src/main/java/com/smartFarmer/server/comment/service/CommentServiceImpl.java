@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.smartFarmer.server.auth.entity.AccountEntity;
 import com.smartFarmer.server.auth.repository.AccountRepository;
@@ -32,13 +34,14 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private ParkingAlotRepository parkingAlotRepository;
 
-    public ResponseEntity<String> write(RequestAddComment addInfo) {
+    public ResponseEntity<String> write(RequestAddComment addInfo) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         String email = authentication.getName();
 
         if (email == "anonymousUser") {
-            return ResponseEntity.badRequest().body(null);
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED);
         }
 
         AccountEntity account = accountRepository.findByEmail(email);
