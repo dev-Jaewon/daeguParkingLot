@@ -1,34 +1,15 @@
 import ReactDOM from 'react-dom/client'
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-
-import App from './App.tsx'
 
 import './styles/index.scss'
 import './styles/common.scss'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { SignUp } from './components/Signup.tsx';
-import { Login } from './components/Login.tsx';
 import styled from '@emotion/styled'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { CustomRouter } from './CustomRouter.tsx';
+import { history } from './history.ts';
+import { RouteList } from './Routes.tsx';
 
 const queryClient = new QueryClient();
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />,
-  },
-  {
-    path: "/auth/signup",
-    element: <SignUp />,
-  },
-  {
-    path: "/auth/login",
-    element: <Login />,
-  },
-]);
 
 const Container = styled.div`
   position: relative;
@@ -38,7 +19,11 @@ const Container = styled.div`
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
-    <Container><RouterProvider router={router} /></Container>
+    <CustomRouter  history={history}>
+      <Container>
+        {RouteList()}
+      </Container>
+    </CustomRouter>
   </QueryClientProvider>
 );
 
