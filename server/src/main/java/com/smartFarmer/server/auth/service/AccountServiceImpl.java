@@ -2,6 +2,7 @@ package com.smartFarmer.server.auth.service;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
 
+import com.smartFarmer.server.auth.dto.AccountDto;
 import com.smartFarmer.server.auth.dto.RequestLoginDto;
 import com.smartFarmer.server.auth.dto.RequestSignupDto;
 import com.smartFarmer.server.auth.entity.AccountEntity;
@@ -26,7 +28,6 @@ import com.smartFarmer.server.configuration.JwtProvider;
 import com.smartFarmer.server.configuration.service.UserDetailsImpl;
 import com.smartFarmer.server.constance.Roles;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
@@ -129,5 +130,20 @@ public class AccountServiceImpl implements AccountService {
         AccountEntity res = accountRepository.findByNickname(nickname);
 
         return ResponseEntity.ok().body(res == null);
+    }
+
+    public ResponseEntity<AccountDto> account(Long id) {
+        Optional<AccountEntity> result = accountRepository.findById(id);
+
+        if (result.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        AccountDto account = new AccountDto(
+                result.get().getId(),
+                result.get().getEmail(),
+                result.get().getNickname());
+
+        return ResponseEntity.ok().body(account);
     }
 }

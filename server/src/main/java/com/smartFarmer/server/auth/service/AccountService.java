@@ -2,6 +2,7 @@ package com.smartFarmer.server.auth.service;
 
 import org.springframework.http.ResponseEntity;
 
+import com.smartFarmer.server.auth.dto.AccountDto;
 import com.smartFarmer.server.auth.dto.RequestLoginDto;
 import com.smartFarmer.server.auth.dto.RequestSignupDto;
 import com.smartFarmer.server.auth.entity.AccountEntity;
@@ -20,4 +21,6 @@ public interface AccountService {
     public ResponseEntity<Boolean> refreshToken(HttpServletRequest request);
 
     public AccountEntity findByEmail(String email);
+
+    public ResponseEntity<AccountDto> account(Long id);
 }

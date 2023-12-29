@@ -2,6 +2,7 @@ package com.smartFarmer.server.auth.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.smartFarmer.server.auth.dto.AccountDto;
 import com.smartFarmer.server.auth.dto.RequestLoginDto;
 import com.smartFarmer.server.auth.dto.RequestSignupDto;
 import com.smartFarmer.server.auth.service.AccountService;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -46,4 +46,10 @@ public class AuthController {
     public ResponseEntity<?> tokenRefresh(HttpServletRequest request) {
         return accountService.refreshToken(request);
     }
+
+    @GetMapping("/account/{id}")
+    public ResponseEntity<AccountDto> account(@PathVariable("id") Long id) {
+        return accountService.account(id);
+    }
+
 }
