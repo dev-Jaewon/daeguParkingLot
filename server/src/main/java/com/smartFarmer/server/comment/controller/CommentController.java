@@ -10,12 +10,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smartFarmer.server.comment.dto.CommentInterface;
+import com.smartFarmer.server.comment.dto.PutComment;
 import com.smartFarmer.server.comment.dto.RequestAddComment;
 import com.smartFarmer.server.comment.service.CommentService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @RestController
 @RequestMapping("/comment")
@@ -37,5 +40,10 @@ public class CommentController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id){
         return commentService.delete(id);
+    }
+
+    @PutMapping
+    public ResponseEntity<Void> put(@RequestBody PutComment putCommentInfo) {
+        return commentService.put(putCommentInfo);
     }
 }

@@ -5,6 +5,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { commentList, removeComment } from '../utils/api';
 import { FaRegComments } from "react-icons/fa";
 import { useAccount } from '../hooks/useAccount';
+import { useState } from 'react';
+import { ModifyComment } from './ModifyComment';
 
 interface CommentListType {
     parkingLotId: number;
@@ -13,6 +15,8 @@ interface CommentListType {
 export const CommentList = ({ parkingLotId }: CommentListType) => {
     const account = useAccount();
     const queryClient = useQueryClient();
+
+    const [modifyCommentId, setModifyCommentId] = useState<number>(0);
 
     const comments = useQuery({
         queryKey: ['commentList', parkingLotId], queryFn: () => commentList(parkingLotId), initialData: []
@@ -23,24 +27,40 @@ export const CommentList = ({ parkingLotId }: CommentListType) => {
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['commentList'] })
     })
 
+    const resetComment = () => {
+        setModifyCommentId(0);
+    }
+
     return <Container>
         <Title>Comment</Title>
         <WriteComment parkingLotId={parkingLotId} />
         <ReviewContents>
             {
                 comments.data.length > 0 ?
-                comments.data.map((c: any) =>
+                    comments.data.map((c: any) =>
                         <Review key={c.id}>
                             <div className='review_info'>
                                 <div className='nick_name'>
                                     <FaUser /> {c.nickname}
                                     {
-                                        c.nickname === account.data.nickname && <DeleteButton onClick={() => mutation.mutate(c.id)}>지우기</DeleteButton>
+                                        c.nickname === account.data.nickname &&
+                                        <ModifyButtonCointainer>
+                                            {
+                                                modifyCommentId === 0 ?
+                                                    <div onClick={() => setModifyCommentId(c.id)}>수정</div>
+                                                    : <div onClick={() => setModifyCommentId(0)}>취소</div>
+                                            }
+                                            <div onClick={() => mutation.mutate(c.id)}>삭제</div>
+                                        </ModifyButtonCointainer>
                                     }
                                 </div>
                                 <div className='create-at'>{c.createAt}</div>
                             </div>
-                            <div className='content'>{c.content}</div>
+                            <div>
+                                {
+                                    modifyCommentId === c.id ? <ModifyComment commentId={c.id} content={c.content} resetComment={resetComment} /> : <div className='content'>{c.content}</div>
+                                }
+                            </div>
                         </Review>)
                     : <NoComment>
                         <FaRegComments size={'150px'} color="#92a0fa" />
@@ -121,11 +141,10 @@ const NoComment = styled.div`
     }
 `;
 
-const DeleteButton = styled.div`
+const ModifyButtonCointainer = styled.div`
     display: flex;
     align-items: end;
-    margin-left: 3x;
-    font-size: 0.8rem;
-    color: red;
+    font-size: 0.7rem;
+    gap:5px;
     cursor: pointer;
 `;

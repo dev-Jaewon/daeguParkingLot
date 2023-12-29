@@ -4,6 +4,7 @@ import { SignUpType } from "../types/SignUp";
 import { LoginType } from "../types/Login";
 import { RequestAddComment } from "../types/RequestAddComment";
 import { history } from "../history";
+import { ModifyCommen } from "../types/ModifyComment";
 
 const api = axios.create({
     baseURL:
@@ -19,15 +20,13 @@ api.interceptors.request.use(
 api.interceptors.response.use(((response) => response), async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === HttpStatusCode.Unauthorized) {
+    if (error.response?.status === HttpStatusCode.Unauthorized 
+        || error.response?.status === HttpStatusCode.Forbidden) {
         try {
             const refresh = await api.get('/auth/refresh');
 
             if (refresh.status === 200) {
-
-                const refetchResut = await axios.request(originalRequest);
-                Promise.resolve(refetchResut);
-
+                return await axios.request(originalRequest);
             }
 
         } catch (refetchError) {
@@ -80,4 +79,8 @@ export const account = async () => {
 
 export const removeComment = async (id: number) => {
     return await api.delete(`/comment/${id}`).then(res => res.data);
+}
+
+export const modifyCommen = async (modifyCommen: ModifyCommen) => {
+    return await api.put(`/comment`,modifyCommen).then(res => res.data);
 }

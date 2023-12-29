@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.smartFarmer.server.auth.entity.AccountEntity;
 import com.smartFarmer.server.auth.repository.AccountRepository;
 import com.smartFarmer.server.comment.dto.CommentInterface;
+import com.smartFarmer.server.comment.dto.PutComment;
 import com.smartFarmer.server.comment.dto.RequestAddComment;
 import com.smartFarmer.server.comment.entity.CommentEntity;
 import com.smartFarmer.server.comment.repository.CommentRepository;
@@ -75,6 +76,21 @@ public class CommentServiceImpl implements CommentService {
         }else{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<Void> put(PutComment putCommentInfo){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        CommentEntity comment = commentRepository.findById(putCommentInfo.getId()).get();
+
+        if(!comment.getAccount().getEmail().equals(auth.getName())){
+            return ResponseEntity.badRequest().build();
+        }
+
+        comment.setContent(putCommentInfo.getContent());
+        commentRepository.save(comment);
 
         return ResponseEntity.ok().build();
     }
