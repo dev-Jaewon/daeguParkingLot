@@ -22,5 +22,5 @@ public interface AccountService {
 
     public AccountEntity findByEmail(String email);
 
-    public ResponseEntity<AccountDto> account(Long id);
+    public ResponseEntity<AccountDto> account();
 }

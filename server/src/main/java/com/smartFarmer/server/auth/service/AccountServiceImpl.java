@@ -2,7 +2,6 @@ package com.smartFarmer.server.auth.service;
 
 import java.util.Set;
 import java.util.HashSet;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -132,17 +131,19 @@ public class AccountServiceImpl implements AccountService {
         return ResponseEntity.ok().body(res == null);
     }
 
-    public ResponseEntity<AccountDto> account(Long id) {
-        Optional<AccountEntity> result = accountRepository.findById(id);
+    public ResponseEntity<AccountDto> account() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (result.isEmpty()) {
+        if (auth.getName() == "anonymousUser") {
             return ResponseEntity.badRequest().build();
         }
 
+        AccountEntity result = accountRepository.findByEmail(auth.getName());
+
         AccountDto account = new AccountDto(
-                result.get().getId(),
-                result.get().getEmail(),
-                result.get().getNickname());
+                result.getId(),
+                result.getEmail(),
+                result.getNickname());
 
         return ResponseEntity.ok().body(account);
     }

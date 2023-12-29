@@ -64,4 +64,18 @@ public class CommentServiceImpl implements CommentService {
         }
         return null;
     }
+
+    public ResponseEntity<Void> delete(Long id){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Optional<CommentEntity> comment = commentRepository.findById(id);
+
+        if(!comment.isEmpty() && comment.get().getAccount().getEmail().equals(authentication.getName())){
+            commentRepository.delete(comment.get());
+        }else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok().build();
+    }
 }

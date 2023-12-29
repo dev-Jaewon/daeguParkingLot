@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.smartFarmer.server.comment.dto.CommentInterface;
 import com.smartFarmer.server.comment.dto.RequestAddComment;
 import com.smartFarmer.server.comment.service.CommentService;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -32,4 +34,8 @@ public class CommentController {
         return commentService.list(id);
     }
     
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id){
+        return commentService.delete(id);
+    }
 }

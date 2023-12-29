@@ -47,9 +47,9 @@ public class AuthController {
         return accountService.refreshToken(request);
     }
 
-    @GetMapping("/account/{id}")
-    public ResponseEntity<AccountDto> account(@PathVariable("id") Long id) {
-        return accountService.account(id);
+    @GetMapping("/account")
+    public ResponseEntity<AccountDto> account() {
+        return accountService.account();
     }
 
 }

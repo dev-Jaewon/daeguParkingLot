@@ -1,31 +1,42 @@
 import styled from '@emotion/styled';
 import { FaUser } from 'react-icons/fa';
 import { WriteComment } from './WriteComment';
-import { useQuery } from '@tanstack/react-query';
-import { commentList } from '../utils/api';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { commentList, removeComment } from '../utils/api';
 import { FaRegComments } from "react-icons/fa";
+import { useAccount } from '../hooks/useAccount';
 
 interface CommentListType {
     parkingLotId: number;
 }
 
 export const CommentList = ({ parkingLotId }: CommentListType) => {
+    const account = useAccount();
+    const queryClient = useQueryClient();
 
-    const { data } = useQuery({
+    const comments = useQuery({
         queryKey: ['commentList', parkingLotId], queryFn: () => commentList(parkingLotId), initialData: []
     });
+
+    const mutation = useMutation({
+        mutationFn: (commentId: number) => removeComment(commentId),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['commentList'] })
+    })
 
     return <Container>
         <Title>Comment</Title>
         <WriteComment parkingLotId={parkingLotId} />
         <ReviewContents>
             {
-                data.length > 0 ?
-                    data.map((c: any) =>
+                comments.data.length > 0 ?
+                comments.data.map((c: any) =>
                         <Review key={c.id}>
                             <div className='review_info'>
                                 <div className='nick_name'>
                                     <FaUser /> {c.nickname}
+                                    {
+                                        c.nickname === account.data.nickname && <DeleteButton onClick={() => mutation.mutate(c.id)}>지우기</DeleteButton>
+                                    }
                                 </div>
                                 <div className='create-at'>{c.createAt}</div>
                             </div>
@@ -108,4 +119,13 @@ const NoComment = styled.div`
         font-weight: 600;
         color: #b6b6b6;
     }
+`;
+
+const DeleteButton = styled.div`
+    display: flex;
+    align-items: end;
+    margin-left: 3x;
+    font-size: 0.8rem;
+    color: red;
+    cursor: pointer;
 `;

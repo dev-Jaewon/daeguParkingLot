@@ -73,3 +73,11 @@ export const commentList = async (parkingLotId: number) => {
 export const getDetailInfo = async (parkingLotId: string) => {
     return await api.get(`/parkingLot/detail/${parkingLotId}`).then(res => res.data);
 }
+
+export const account = async () => {
+    return await api.get(`/account`).then(res => res.data);
+}
+
+export const removeComment = async (id: number) => {
+    return await api.delete(`/comment/${id}`).then(res => res.data);
+}

@@ -11,4 +11,6 @@ public interface CommentService {
     public ResponseEntity<String> write(RequestAddComment addInfo) throws Exception;
 
     public ResponseEntity<List<CommentInterface>> list(Long parkingLotId);
+
+    public ResponseEntity<Void> delete(Long id);
 }

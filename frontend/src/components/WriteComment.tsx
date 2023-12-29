@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FormEvent } from 'react';
 import { writeComment } from '../utils/api';
 import { RequestAddComment } from '../types/RequestAddComment';
+import { useAccount } from '../hooks/useAccount';
 
 interface WriteCommentType {
     parkingLotId: number;
@@ -10,6 +11,7 @@ interface WriteCommentType {
 
 export const WriteComment = ({ parkingLotId }: WriteCommentType) => {
     const queryClient = useQueryClient();
+    const { data } = useAccount();
 
     const mutation = useMutation({
         mutationFn: (addInfo: RequestAddComment) => writeComment(addInfo),
@@ -36,7 +38,7 @@ export const WriteComment = ({ parkingLotId }: WriteCommentType) => {
 
     return <WirteComment>
         {
-            true ? <form onSubmit={handleSubmit}><div className='input_Container'>
+            data.email ? <form onSubmit={handleSubmit}><div className='input_Container'>
                 <input type="text" placeholder='코멘트를 남겨주세요.' name='comment' />
             </div>
                 <button>작성하기</button>

@@ -10,5 +10,5 @@ import lombok.Setter;
 public class AccountDto {
     private Long id;
     private String email;
-    private String nickName;
+    private String nickname;
 }
