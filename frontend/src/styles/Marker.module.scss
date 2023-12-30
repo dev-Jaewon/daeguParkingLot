@@ -1,0 +1,68 @@
+.container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 1px solid #afafff;
+    border-radius: 5px;
+    background-color: white;
+    font-size: 1.4rem;
+    font-weight: 600;
+    padding: 7px;
+    width: 100%;
+    box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
+
+    p {
+        white-space: pre;
+    }
+}
+
+.circle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #afafff;
+    border-radius: 50%;
+    padding: 5px;
+    margin-right: 10px;
+}
+
+
+.after_arrow {
+    border: 8px solid;
+    border-color: #afafff transparent transparent transparent;
+    position: absolute;
+    top: 100%;
+    left: 20px;
+    transform: translateX(-50%);
+}
+
+.before_arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 100%;
+    left: 20px;
+    transform: translateX(-50%);
+    border: 7px solid;
+    border-color: #fff transparent transparent transparent;
+}
+
+.container_focus {
+    @extend .container;
+    background-color: #afafff !important;
+    color: white !important;
+}
+
+.circle_focus {
+    @extend .circle;
+    border: 2px solid white !important;
+
+    svg {
+        color: white !important;
+    }
+}
+
+.before_arrow_focus {
+    @extend .before_arrow;
+    border-color: #afafff transparent transparent transparent !important;
+}

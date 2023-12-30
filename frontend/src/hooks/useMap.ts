@@ -1,12 +1,13 @@
 import { useEffect, useState, useRef } from 'react';
 import { PER_RANGE, DEFAULT_LOCATION } from '../Constant';
 import { ParkingLot } from '../types/ParkingLot';
+import { FocusMarker, Marker } from '../components/CustomMarker';
 
 interface UseMapTypes {
     markers: Array<ParkingLot>
 }
 
-export const useMap = (props: UseMapTypes) => {
+export const useMap = ({ markers }: UseMapTypes) => {
     const targetEle = useRef<HTMLDivElement | null>(null);
     const mapInstance = useRef<naver.maps.Map>();
     const [location, setLocation] = useState(DEFAULT_LOCATION);
@@ -44,13 +45,13 @@ export const useMap = (props: UseMapTypes) => {
         if (!mapInstance.current) return;
         const markerInsList = <Array<naver.maps.Marker>>[];
 
-        for (let marker of props.markers) {
-            markerInsList.push(createMarkerInstance(Number(marker.lat), Number(marker.lot)));
+        for (let marker of markers) {
+            markerInsList.push(createMarkerInstance(Number(marker.lat), Number(marker.lot), marker.name));
         }
 
         clearMarkerForMap();
         setMarkerIns(markerInsList);
-    }, [props.markers])
+    }, [markers])
 
     useEffect(() => {
         const markerClickEvents = <Array<naver.maps.MapEventListener>>[];
@@ -68,25 +69,31 @@ export const useMap = (props: UseMapTypes) => {
     const onClickMarker = (index: number) => {
         if (!mapInstance.current) return;
 
-        const t = new naver.maps.InfoWindow({
-            content: '<div class="markerOverlay">HERE</div>',
-            borderWidth: 0,
-            disableAnchor: true,
-            backgroundColor: 'transparent',
-        });
+        markerIns.forEach((marker, i) => {
+            const name = markers[i].name;
 
-        if (t.getMap()) {
-            t.close();
-        } else {
-            setFocusParkingLot(index);
-            t.open(mapInstance.current, markerIns[index]);
-        }
+            if (i === index) {
+                marker.setIcon({
+                    content: FocusMarker(name),
+                    anchor: new naver.maps.Point(20, 60)
+                })
+            } else {
+                marker.setIcon({
+                    content: Marker(name),
+                    anchor: new naver.maps.Point(20, 60)
+                })
+            }
+        })
     }
 
-    const createMarkerInstance = (lat: number, lot: number) => {
+    const createMarkerInstance = (lat: number, lot: number, name: string) => {
         return new naver.maps.Marker({
             position: new naver.maps.LatLng(lat, lot),
             map: mapInstance.current,
+            icon: {
+                content: Marker(name),
+                anchor: new naver.maps.Point(20, 60)
+            }
         })
     }
 
@@ -127,7 +134,7 @@ export const useMap = (props: UseMapTypes) => {
         onChangeLocation,
         onClickMarker,
         mapInstance,
-        focusParkingLot, 
+        focusParkingLot,
         setFocusParkingLot
     }
 }
