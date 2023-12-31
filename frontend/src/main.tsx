@@ -9,7 +9,13 @@ import { CustomRouter } from './CustomRouter.tsx';
 import { history } from './history.ts';
 import { RouteList } from './Routes.tsx';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false
+    }
+  }
+});
 
 const Container = styled.div`
   position: relative;
