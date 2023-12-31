@@ -21,14 +21,21 @@ function App() {
 
   const { mapInstance, targetEle, location, focusParkingLot, setPosition, onChangeLocation, onClickMarker, setFocusParkingLot } = useMap({ markers: data?.markers || [] });
 
-  const { ref } = useIntersect(() => {
+  const { ref, current } = useIntersect(() => {
     if (isLoading) return;
+
+    if(locationTrigger.page === data?.lastPage) return;
 
     setLocationTrigger(preV => ({ ...preV, page: preV.page + 1 }));
   }, 0.1);
 
   useEffect(() => {
-    setLocationTrigger(() => ({...location, ...DEFAULT_INFO }));
+    if (current) {
+      const scrollTarget = current.parentElement;
+      scrollTarget?.scroll(0, 0);
+    }
+
+    setLocationTrigger(() => ({ ...location, ...DEFAULT_INFO }));
     setFocusParkingLot(null);
   }, [location.lat, location.lot])
 

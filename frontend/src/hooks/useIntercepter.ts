@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const useIntersect = (callbackFn: Function, threshold: number) => {
-    // const ref = useRef<HTMLElement>(null);
     const [current, ref] = useState<HTMLDivElement|null>(null);
 
     useEffect(() => {
@@ -25,5 +24,5 @@ export const useIntersect = (callbackFn: Function, threshold: number) => {
         };
     }, [current]);
 
-    return { ref };
+    return { ref, current };
 };

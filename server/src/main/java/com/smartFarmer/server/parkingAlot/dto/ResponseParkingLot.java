@@ -4,16 +4,17 @@ import java.util.List;
 
 import com.smartFarmer.server.parkingAlot.entity.ParkingLotEntity;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class ResponseParkingLot {
     private int page;
     private int size;
+    private int lastPage;
     private List<ParkingLotEntity> list;
     private List<ParkingLotEntity> markers;
 }

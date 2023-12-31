@@ -21,39 +21,28 @@ public class ParkingAlotServiceImpl implements ParkingAlotService {
 
     @Override
     public ResponseEntity<ResponseParkingLot> searchData(SearchDto p) {
-try{
-        List<ParkingLotEntity> result = parkingAlotRepository.findAll(SearchSpecification.search(p));
+        List<ParkingLotEntity> searchAll = parkingAlotRepository.findAll(SearchSpecification.search(p));
 
-        List<List<ParkingLotEntity>> pagination = setPagination(result, p.getPage(), p.getPerPage());
+        List<ParkingLotEntity> pageList = setPagination(searchAll, p.getPage(), p.getPerPage());
 
-        if (result.size() == 0) {
-            return ResponseEntity.ok()
-                    .body(new ResponseParkingLot(p.getPage(), result.size(), result, result));
+        ResponseParkingLot resData = ResponseParkingLot
+                .builder().page(p.getPage()).size(searchAll.size())
+                .lastPage((int) Math.ceil((double) searchAll.size() / (double) p.getPerPage()))
+                .list(pageList).markers(searchAll)
+                .build();
+
+        return ResponseEntity.ok().body(resData);
+    }
+
+    private static List<ParkingLotEntity> setPagination(List<ParkingLotEntity> list, int page, int perPage) {
+        if (list.size() == 0) {
+            return new ArrayList<>();
         }
 
-        return ResponseEntity.ok()
-                .body(new ResponseParkingLot(p.getPage(), result.size(), pagination.get(0), result));
-    }catch(Exception e){
-        System.out.println(e);
-    }
-    return ResponseEntity.ok().body(null);
-    }
-
-    private static List<List<ParkingLotEntity>> setPagination(List<ParkingLotEntity> list, int page, int perPage) {
-        List<List<ParkingLotEntity>> sublists = new ArrayList<>();
-
-        if (list.size() == 0)
-            return sublists;
-
-        if (page == Math.ceil((double) list.size() / perPage)) {
-            sublists.add(list.subList(0, ((page - 1) * perPage) + Math.round(list.size() % perPage)));
-        } else if (page * perPage >= list.size()) {
-            sublists.add(list.subList(page, list.size() - 1));
+        if (page * perPage >= list.size()) {
+            return list;
         } else {
-            sublists.add(list.subList(0, (page) * perPage));
+            return list.subList(0, perPage * page);
         }
-
-        return sublists;
     }
-
 }
