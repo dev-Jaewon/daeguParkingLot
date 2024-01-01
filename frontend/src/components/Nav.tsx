@@ -1,23 +1,29 @@
 import styled from '@emotion/styled';
 import { BiCurrentLocation } from "react-icons/bi";
 import { Loading } from './Loading';
+import { SearchParkList } from '../types/SearchParkList';
+import { Dispatch, SetStateAction } from 'react';
 
 interface NavProps {
-    setPosition: (lat: number, lot: number) => void
-    onChangeLocation: () => void
-    isLoading: boolean
+    setPosition: Dispatch<SetStateAction<SearchParkList>>
+    isLoading: boolean,
+    mapInstance?: naver.maps.Map
 }
 
 export const Nav = (props: NavProps) => {
-    const handleClickMyLocation = () => {
-        navigator.geolocation.getCurrentPosition(({ coords }) => {
-            props.setPosition(coords.latitude, coords.longitude);
-        });
+    const handleCLickThisLocation = () => {
+        if (!props.mapInstance) return;
 
+        const {x, y} = props.mapInstance.getCenter();
+        props.setPosition(preV => ({...preV, lat: y, lot: x}))
     }
 
-    const handleCLickThisLocation = () => {
-        props.onChangeLocation();
+    const handleClickMyLocation = () => {
+        navigator.geolocation.getCurrentPosition(({ coords }) => {
+            if (!props.mapInstance) return;
+
+            props.mapInstance.setCenter({ lat: coords.latitude, lng: coords.longitude })
+        });
     }
 
     return (
