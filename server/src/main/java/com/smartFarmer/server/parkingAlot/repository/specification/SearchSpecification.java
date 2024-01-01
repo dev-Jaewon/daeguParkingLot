@@ -23,23 +23,28 @@ public class SearchSpecification {
         return (root, cq, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if(p.getContent() != null){
+            if (p.getContent() != null) {
                 SearchDetail searchDetail = getAddress(p.getContent());
 
                 predicates.addAll(detailPredicates(root, builder, searchDetail));
             }
 
-            Expression<Geometry> target = geo(root, builder, root.get("lat"), root.get("lot"));
-            Expression<Geometry> center = geo(root, builder, builder.literal(p.getLat()), builder.literal(p.getLot()));
-            Expression<Boolean> within = builder.function("ST_DWithin", Boolean.class, target, center, builder.literal(p.getRange()));
+            if (p.getContent().isEmpty()) {
+                Expression<Geometry> target = geo(root, builder, root.get("lat"), root.get("lot"));
+                Expression<Geometry> center = geo(root, builder, builder.literal(p.getLat()),
+                        builder.literal(p.getLot()));
+                Expression<Boolean> within = builder.function("ST_DWithin", Boolean.class, target, center,
+                        builder.literal(p.getRange()));
 
-            predicates.add(builder.equal(within, true));
+                predicates.add(builder.equal(within, true));
+            }
 
             return builder.and(predicates.toArray(new Predicate[predicates.size()]));
         };
     }
 
-    private static Expression<Geometry> geo(Root<ParkingLotEntity> root, CriteriaBuilder builder, Expression<?> lat, Expression<?> lot) {
+    private static Expression<Geometry> geo(Root<ParkingLotEntity> root, CriteriaBuilder builder, Expression<?> lat,
+            Expression<?> lot) {
         Expression<Point> point = builder.function("ST_Point", Point.class, lot, lat);
         Expression<Point> centerPoint = builder.function("ST_SetSRID", Point.class, point, builder.literal(4326));
 
@@ -50,33 +55,34 @@ public class SearchSpecification {
         return "%" + value + "%";
     }
 
-    private static List<Predicate> detailPredicates(Root<ParkingLotEntity> root, CriteriaBuilder builder, SearchDetail searchInfo){
+    private static List<Predicate> detailPredicates(Root<ParkingLotEntity> root, CriteriaBuilder builder,
+            SearchDetail searchInfo) {
         List<Predicate> predicates = new ArrayList<>();
 
-            if (searchInfo.getDong() != null) {
-                predicates.add(builder.like(root.get("streetAddress"), likePattern(searchInfo.getRo())));
-            } else if (searchInfo.getRo() != null) {
-                predicates.add(builder.like(root.get("locationAddress"), likePattern(searchInfo.getDong())));
-            }
+        if (searchInfo.getDong() != null) {
+            predicates.add(builder.like(root.get("locationAddress"), likePattern(searchInfo.getDong())));
+        } else if (searchInfo.getRo() != null) {
+            predicates.add(builder.like(root.get("streetAddress"), likePattern(searchInfo.getRo())));
+        }
 
-            if (searchInfo.getGu() != null) {
-                predicates.add(builder.like(root.get("streetAddress"), likePattern(searchInfo.getGu())));
-            }
+        if (searchInfo.getGu() != null) {
+            predicates.add(builder.like(root.get("streetAddress"), likePattern(searchInfo.getGu())));
+        }
 
-            if (searchInfo.getFree() != null) {
-                predicates.add(builder.like(root.get("priceInformation"), likePattern(searchInfo.getFree())));
-            }
+        if (searchInfo.getFree() != null) {
+            predicates.add(builder.like(root.get("priceInformation"), likePattern(searchInfo.getFree())));
+        }
 
-            if (searchInfo.getName() != null) {
-                predicates.add(builder.like(root.get("name"), likePattern(searchInfo.getName())));
-            }
+        if (searchInfo.getName() != null) {
+            predicates.add(builder.like(root.get("name"), likePattern(searchInfo.getName())));
+        }
 
         return predicates;
     }
 
     private static SearchDetail getAddress(String content) {
-        final Pattern PACKAGE_PATTERN_1 = Pattern.compile("([가-힣A-Za-z·\\d~\\-\\.]{2,}(로|길).[\\d]+)");
-        final Pattern PACKAGE_PATTERN_2 = Pattern.compile("([가-힣A-Za-z·\\d~\\-\\.]+(읍|동)\\s)[\\d]+-[\\d]+");
+        final Pattern PACKAGE_PATTERN_1 = Pattern.compile("([가-힣A-Za-z·\\d~\\-\\.]+(로|길))");
+        final Pattern PACKAGE_PATTERN_2 = Pattern.compile("([가-힣A-Za-z·\\d~\\-\\.]+(읍|동))");
         final Pattern DAEGU = Pattern.compile("(대구광역시|대구)");
         final Pattern GU = Pattern.compile("[가-힣]{1,}구");
         final Pattern FREE = Pattern.compile("(무료|유료)");
@@ -102,7 +108,7 @@ public class SearchSpecification {
 
         matcher = GU.matcher(content);
         if (matcher.find()) {
-            searchDetail.setGu(content);
+            searchDetail.setGu(matcher.group());
             content = content.replaceAll(GU.pattern(), "").trim();
         }
 
@@ -117,7 +123,9 @@ public class SearchSpecification {
             content = content.replaceAll(FREE.pattern(), "").trim();
         }
 
-        searchDetail.setName(content);
+        if (!content.isBlank()) {
+            searchDetail.setName(content);
+        }
 
         return searchDetail;
     }
