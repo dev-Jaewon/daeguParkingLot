@@ -77,11 +77,13 @@ export const useMap = ({ markers }: UseMapTypes) => {
                     content: FocusMarker(name),
                     anchor: new naver.maps.Point(20, 60)
                 })
+                marker.setZIndex(100);
             } else {
                 marker.setIcon({
                     content: Marker(name),
                     anchor: new naver.maps.Point(20, 60)
                 })
+                marker.setZIndex(99);
             }
         })
     }
