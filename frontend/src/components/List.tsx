@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, forwardRef } from 'react';
 import styled from '@emotion/styled';
 import { ParkingLot } from '../types/ParkingLot';
+import { ListLoading } from './ListLoading';
 
 interface ListProps {
     markers: Array<ParkingLot>
@@ -49,7 +50,7 @@ export const List = forwardRef(({ markers, setSelectPark, isLoading, mapInstance
                     <ScrollTarget ref={ref} />
                 </>
                 :
-                <div>로딩중</div>
+                <ListLoading />
         }
     </Container>
 });
