@@ -19,10 +19,10 @@ export const useIntersect = (callbackFn: Function, threshold: number) => {
 
         observer.observe(current);
 
-        () => {
+        return () => {
             if (current) observer.unobserve(current);
         };
-    }, [current]);
+    }, [current, callbackFn]);
 
     return { ref, current };
 };
