@@ -64,6 +64,7 @@ public class SecurityConfig {
                 .disable())
                 .authorizeHttpRequests((authz) -> authz
                     .requestMatchers(HttpMethod.PUT, "/comment").hasRole("USER")
+                    .requestMatchers(HttpMethod.GET, "/account").hasRole("USER")
                         .anyRequest().permitAll());
 
         http.cors(cors -> cors
