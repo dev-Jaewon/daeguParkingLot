@@ -1,7 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
-import { PER_RANGE, DEFAULT_LOCATION } from '../Constant';
+import { DEFAULT_LOCATION } from '../Constant';
 import { ParkingLot } from '../types/ParkingLot';
-import { FocusMarker, Marker } from '../components/CustomMarker';
+import { NaverMap } from '../util/NaverMap';
+import { CLUSTER_OPTIONS } from '../Constant';
+import { Cluster_1, Cluster_2 } from '../components/Cluster';
 
 interface UseMapTypes {
     markers: Array<ParkingLot>
@@ -10,10 +12,9 @@ interface UseMapTypes {
 export const useMap = ({ markers }: UseMapTypes) => {
     const targetEle = useRef<HTMLDivElement | null>(null);
     const mapInstance = useRef<naver.maps.Map>();
-    const [location, setLocation] = useState(DEFAULT_LOCATION);
-    const [markerIns, setMarkerIns] = useState<Array<naver.maps.Marker>>([]);
-    const [markerClickEvents, setMarkerClickEvents] = useState<Array<naver.maps.MapEventListener>>();
-    const [focusParkingLot, setFocusParkingLot] = useState<number | null>(null)
+
+    const [focusParkingLotIndex, setFocusParkingLotIndex] = useState<number | null>(null)
+    const [cluster, setCluster] = useState<MarkerClustering>();
 
     useEffect(() => {
         if (targetEle?.current) {
@@ -28,115 +29,57 @@ export const useMap = ({ markers }: UseMapTypes) => {
 
             mapInstance.current = MapInstance;
         }
-
-        let zoomListener: naver.maps.MapEventListener | null = null;
-
-        if (mapInstance.current) {
-            mapInstance.current.addListener('zoom_changed', handleZoomChagne);
-        }
-
-        return () => {
-            if (zoomListener) mapInstance.current?.removeListener(zoomListener);
-        }
-
     }, [])
 
     useEffect(() => {
-        if (!mapInstance.current) return;
-        const markerInsList = <Array<naver.maps.Marker>>[];
+        if (!mapInstance.current) return
 
-        for (let marker of markers) {
-            markerInsList.push(createMarkerInstance(Number(marker.lat), Number(marker.lot), marker.name));
+        const clickEvents: Array<naver.maps.MapEventListener> = [];
+
+        const map = new NaverMap(mapInstance.current, markers);
+
+        const idleEvent = naver.maps.Event.addListener(mapInstance.current, 'idle', () => map.filterOutMarkers());
+
+        for (const [i, marker] of map.getMarkerInstance().entries()) {
+            const clickEvent = naver.maps.Event.addListener(marker, 'click', () => {
+                map.focusMarkers(marker);
+                setFocusParkingLotIndex(i);
+            })
+
+            clickEvents.push(clickEvent);
         }
 
-        clearMarkerForMap();
-        setMarkerIns(markerInsList);
+        setCluster(
+            new MarkerClustering({
+                ...CLUSTER_OPTIONS,
+                map: mapInstance.current,
+                icons: [Cluster_1, Cluster_2],
+                indexGenerator: [20, 50],
+                markers: map.getMarkerInstance(),
+                stylingFunction: (clusterMarker, count) => {
+                    const container = clusterMarker.getElement();
+                    const contentElement = container.querySelector(".content") as HTMLDivElement;
+
+                    contentElement.textContent = count;
+                }
+            }))
+
+        return () => {
+            naver.maps.Event.removeListener(idleEvent);
+
+            if (clickEvents.length) {
+                for (const event of clickEvents) {
+                    naver.maps.Event.removeListener(event);
+                }
+            }
+        }
+
     }, [markers])
-
-    useEffect(() => {
-        const markerClickEvents = <Array<naver.maps.MapEventListener>>[];
-
-        for (let i = 0; i < markerIns.length; i++) {
-            markerClickEvents.push(
-                naver.maps.Event.addListener(markerIns[i], 'click', () => onClickMarker(i))
-            )
-        }
-
-        clearMarkerClickEvent();
-        setMarkerClickEvents(markerClickEvents);
-    }, [markerIns])
-
-    const onClickMarker = (index: number) => {
-        if (!mapInstance.current) return;
-
-        markerIns.forEach((marker, i) => {
-            const name = markers[i].name;
-
-            if (i === index) {
-                marker.setIcon({
-                    content: FocusMarker(name),
-                    anchor: new naver.maps.Point(20, 60)
-                })
-                marker.setZIndex(100);
-            } else {
-                marker.setIcon({
-                    content: Marker(name),
-                    anchor: new naver.maps.Point(20, 60)
-                })
-                marker.setZIndex(99);
-            }
-        })
-    }
-
-    const createMarkerInstance = (lat: number, lot: number, name: string) => {
-        return new naver.maps.Marker({
-            position: new naver.maps.LatLng(lat, lot),
-            map: mapInstance.current,
-            icon: {
-                content: Marker(name),
-                anchor: new naver.maps.Point(20, 60)
-            }
-        })
-    }
-
-    const handleZoomChagne = (zoom: number) => {
-        if (zoom >= 16) {
-            setLocation(v => ({ ...v, range: PER_RANGE[16] }));
-        } else if (zoom <= 11) {
-            setLocation(v => ({ ...v, range: PER_RANGE[11] }));
-        } else {
-            setLocation(v => ({ ...v, range: PER_RANGE[zoom as keyof typeof PER_RANGE] }));
-        }
-    }
-
-    const setPosition = (lat: number, lot: number) => {
-
-        mapInstance.current?.setCenter(new naver.maps.LatLng(lat, lot));
-    }
-
-    const onChangeLocation = () => {
-        if (mapInstance.current) {
-            const { x, y } = mapInstance.current.getCenter();
-            setLocation((prevalue) => ({ ...prevalue, lat: y, lot: x }));
-        }
-    }
-
-    const clearMarkerClickEvent = () => {
-        markerClickEvents?.forEach(event => mapInstance.current?.removeListener(event));
-    }
-
-    const clearMarkerForMap = () => {
-        markerIns.forEach(marker => marker.setMap(null));
-    }
 
     return {
         targetEle,
-        location,
-        setPosition,
-        onChangeLocation,
-        onClickMarker,
         mapInstance,
-        focusParkingLot,
-        setFocusParkingLot
+        focusParkingLotIndex,
+        setFocusParkingLotIndex
     }
 }

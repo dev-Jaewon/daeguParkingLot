@@ -13,20 +13,16 @@ import { useSearchQuery } from './hooks/useQuery';
 import { DEFAULT_INFO, DEFAULT_LOCATION } from './Constant';
 
 function App() {
-  const [locationTrigger, setLocationTrigger] = useState<SearchParkList>({
-    ...DEFAULT_LOCATION, ...DEFAULT_INFO
-  });
+  const [searchInfo, setSearchInfo] = useState<SearchParkList>(Object.assign(DEFAULT_INFO, DEFAULT_LOCATION));
 
-  const { data, isLoading } = useSearchQuery(locationTrigger);
+  const { data, isLoading, isFetching } = useSearchQuery(searchInfo);
 
-  const { mapInstance, targetEle, location, focusParkingLot, setPosition, onChangeLocation, onClickMarker, setFocusParkingLot } = useMap({ markers: data?.markers || [] });
+  const { mapInstance, targetEle, focusParkingLotIndex, setFocusParkingLotIndex } = useMap({ markers: data?.markers || [] });
 
   const { ref, current } = useIntersect(() => {
-    if (isLoading) return;
+    if (isFetching || data?.page === data?.lastPage) return;
 
-    if(locationTrigger.page === data?.lastPage) return;
-
-    setLocationTrigger(preV => ({ ...preV, page: preV.page + 1 }));
+    setSearchInfo(preV => ({ ...preV, page: preV.page + 1 }));
   }, 0.1);
 
   useEffect(() => {
@@ -35,37 +31,42 @@ function App() {
       scrollTarget?.scroll(0, 0);
     }
 
-    setLocationTrigger(() => ({ ...location, ...DEFAULT_INFO }));
-    setFocusParkingLot(null);
-  }, [location.lat, location.lot])
+    setFocusParkingLotIndex(null);
+  }, [searchInfo.lat, searchInfo.lot, searchInfo.content])
 
   useEffect(() => {
+    
     mapInstance.current?.autoResize();
-  }, [focusParkingLot])
 
-  const handleClickCloseDetail = () => {
-    setFocusParkingLot(null);
-  }
+  }, [focusParkingLotIndex])
+
+  const handleClickCloseDetail = () => setFocusParkingLotIndex(null);
 
   return (
     <Container>
       <MapContainer>
         <Map ref={targetEle} />
-        <Nav setPosition={setPosition} onChangeLocation={onChangeLocation} isLoading={isLoading} />
+        <Nav setPosition={setSearchInfo} isLoading={isLoading} mapInstance={mapInstance.current} />
       </MapContainer>
       {
-        focusParkingLot !== null && data && <DetailContainer>
+        focusParkingLotIndex !== null && data && <DetailContainer>
           <CloseButton onClick={handleClickCloseDetail}>
             <IoIosArrowForward size={60} />
           </CloseButton>
-          <Detail info={data.markers[focusParkingLot]} />
+          <Detail info={data.markers[focusParkingLotIndex]} />
         </DetailContainer>
       }
       <SideContainer>
         <Logo />
-        <SearchBar setLocationTrigger={setLocationTrigger} />
+        <SearchBar setLocationTrigger={setSearchInfo} />
         <ResultCount>총 {data?.size}개의 검색 결과가 있습니다.</ResultCount>
-        <List isLoading={isLoading} markers={data?.list || []} setSelectPark={setFocusParkingLot} setPosition={setPosition} onClickMarker={onClickMarker} ref={ref} />
+        <List
+          ref={ref}
+          isLoading={isLoading}
+          markers={data?.list || []}
+          setSelectPark={setFocusParkingLotIndex}
+          mapInstance={mapInstance.current}
+        />
       </SideContainer>
     </Container >
   )

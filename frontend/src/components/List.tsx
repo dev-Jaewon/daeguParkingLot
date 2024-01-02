@@ -5,16 +5,19 @@ import { ParkingLot } from '../types/ParkingLot';
 interface ListProps {
     markers: Array<ParkingLot>
     setSelectPark: Dispatch<SetStateAction<number | null>>;
-    setPosition: (lat: number, lot: number) => void
-    onClickMarker: (index: number) => void
-    isLoading: boolean
+    isLoading: boolean;
+    mapInstance?: naver.maps.Map;
 }
 
-export const List = forwardRef(({ markers, setSelectPark, setPosition, onClickMarker, isLoading }: ListProps, ref: any) => {
+export const List = forwardRef(({ markers, setSelectPark, isLoading, mapInstance }: ListProps, ref: any) => {
     const handleClickParkingLot = (index: number) => {
         setSelectPark(index);
-        onClickMarker(index);
-        setPosition(Number(markers[index].lat), Number(markers[index].lot));
+
+        if (mapInstance) {
+            const marker: ParkingLot = markers[index];
+            mapInstance.setZoom(19);
+            mapInstance.panTo({ x: Number(marker.lot), y: Number(marker.lat) });
+        }
     }
 
     return <Container className='scroll-y'>
@@ -108,4 +111,5 @@ const Price = styled.p<{ price: string }>`
 `;
 
 const ScrollTarget = styled.div`
+    height: 10px;
 `;

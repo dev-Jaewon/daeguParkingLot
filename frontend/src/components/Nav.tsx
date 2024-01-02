@@ -15,7 +15,7 @@ export const Nav = (props: NavProps) => {
         if (!props.mapInstance) return;
 
         const {x, y} = props.mapInstance.getCenter();
-        props.setPosition(preV => ({...preV, lat: y, lot: x}))
+        props.setPosition(preV => ({...preV, lat: y, lot: x, page: 1}))
     }
 
     const handleClickMyLocation = () => {

@@ -14,7 +14,7 @@ export const SearchBar = (props: SearchBarType) => {
     const handleClickSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        props.setLocationTrigger((preValue: SearchParkList) => ({ ...preValue, content: inputValue.current }));
+        props.setLocationTrigger((preValue: SearchParkList) => ({ ...preValue, content: inputValue.current, page: 1 }));
     }
 
     const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,7 +22,7 @@ export const SearchBar = (props: SearchBarType) => {
     }
 
     const handleClickForm = () => {
-        props.setLocationTrigger((preValue: SearchParkList) => ({ ...preValue, content: inputValue.current }));
+        props.setLocationTrigger((preValue: SearchParkList) => ({ ...preValue, content: inputValue.current, page: 1 }));
     }
 
     return (
