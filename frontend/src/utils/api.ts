@@ -20,9 +20,10 @@ api.interceptors.request.use(
 api.interceptors.response.use(((response) => response), async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === HttpStatusCode.Unauthorized 
+    if (error.response?.status === HttpStatusCode.Unauthorized
         || error.response?.status === HttpStatusCode.Forbidden) {
         try {
+            originalRequest._retry = true;
             const refresh = await api.get('/auth/refresh');
 
             if (refresh.status === 200) {
@@ -30,9 +31,12 @@ api.interceptors.response.use(((response) => response), async (error) => {
             }
 
         } catch (refetchError) {
-            history.push('/auth/login');
 
-            Promise.reject(refetchError);
+            if (originalRequest.url !== '/account') {
+                history.push('/auth/login');
+            }
+
+            return Promise.reject(refetchError);
         }
     }
 
@@ -69,7 +73,7 @@ export const commentList = async (parkingLotId: number) => {
     return await api.get(`/comment/${parkingLotId}`).then(res => res.data);
 }
 
-export const getDetailInfo = async (parkingLotId: string) => {
+export const getDetailInfo = async (parkingLotId: number) => {
     return await api.get(`/parkingLot/detail/${parkingLotId}`).then(res => res.data);
 }
 

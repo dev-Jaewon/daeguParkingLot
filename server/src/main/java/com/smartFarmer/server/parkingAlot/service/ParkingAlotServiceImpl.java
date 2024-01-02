@@ -2,6 +2,7 @@ package com.smartFarmer.server.parkingAlot.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,18 @@ public class ParkingAlotServiceImpl implements ParkingAlotService {
                 .build();
 
         return ResponseEntity.ok().body(resData);
+    }
+
+    @Override
+    public ResponseEntity<ParkingLotEntity> detailInfo(Long parkingLotId) {
+
+        Optional<ParkingLotEntity> result = parkingAlotRepository.findById(parkingLotId);
+
+        if(result.isEmpty()){
+            return ResponseEntity.badRequest().build();
+        }
+        
+        return ResponseEntity.ok().body(result.get());
     }
 
     private static List<ParkingLotEntity> setPagination(List<ParkingLotEntity> list, int page, int perPage) {

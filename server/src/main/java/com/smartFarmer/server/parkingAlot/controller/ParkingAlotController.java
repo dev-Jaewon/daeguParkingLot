@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.smartFarmer.server.parkingAlot.dto.ResponseParkingLot;
 import com.smartFarmer.server.parkingAlot.dto.SearchDto;
+import com.smartFarmer.server.parkingAlot.entity.ParkingLotEntity;
 import com.smartFarmer.server.parkingAlot.service.ParkingAlotService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,8 @@ public class ParkingAlotController {
     }
 
     @GetMapping("/detail/{id}")
-    public ResponseEntity<String> getDetailInfo(@PathVariable("id") String id) {
-        return ResponseEntity.ok().body("null");
+    public ResponseEntity<ParkingLotEntity> getDetailInfo(@PathVariable("id") Long parkingLotId) {
+        return parkingAlotService.detailInfo(parkingLotId);
     }
 
 }

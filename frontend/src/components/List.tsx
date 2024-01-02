@@ -11,7 +11,7 @@ interface ListProps {
 
 export const List = forwardRef(({ markers, setSelectPark, isLoading, mapInstance }: ListProps, ref: any) => {
     const handleClickParkingLot = (index: number) => {
-        setSelectPark(index);
+        setSelectPark(markers[index].id);
 
         if (mapInstance) {
             const marker: ParkingLot = markers[index];

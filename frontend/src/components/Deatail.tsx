@@ -1,78 +1,87 @@
 import styled from '@emotion/styled';
-import { useQuery } from '@tanstack/react-query';
 import { MdLocationOn, MdAccessTimeFilled, MdMessage } from "react-icons/md";
 import { IoPricetag } from "react-icons/io5";
 import { CommentList } from './CommentList';
 import { ParkingLot } from '../types/ParkingLot';
+import { useQuery } from '@tanstack/react-query';
 import { getDetailInfo } from '../utils/api';
+import { LoadingDetail } from './LoadingDetail';
 
 interface DetailProps {
-    info: ParkingLot,
+    parkingLotId: number,
 }
 
-export const Detail = ({ info }: DetailProps) => {
-    // const { data } = useQuery({
-    //     queryKey: ['detail'], queryFn: () => getDetailInfo(parkingLotId)
-    // });
+export const Detail = ({ parkingLotId }: DetailProps) => {
+    const { data, isFetching } = useQuery<ParkingLot>({
+        queryKey: ['detail', parkingLotId], queryFn: () => getDetailInfo(parkingLotId)
+    });
+
+    if (!data) {
+        return <div>NO DATA</div>
+    }
+
+    if(isFetching){
+        return <LoadingDetail />
+    }
 
     return <Container className='scroll-y'>
         <Header>
             <div />
-            <Title>{info.name}</Title>
+            <Title>{data.name}</Title>
         </Header>
-        {info.locationAddress && <Info>
+        {data.locationAddress && <Info>
             <MdLocationOn size={'20px'} />
-            <p>{info.locationAddress}</p>
+            <p>{data.locationAddress}</p>
         </Info>}
-        {info.streetAddress && <Info>
+        {data.streetAddress && <Info>
             <MdLocationOn size={'20px'} />
-            <p>{info.streetAddress}</p>
+            <p>{data.streetAddress}</p>
         </Info>}
-        {info.operatingDay && <Info>
+        {data.operatingDay && <Info>
             <MdAccessTimeFilled size={'20px'} />
-            <p>{info.operatingDay.replace(/\+/, ", ") + " 이용가능"}</p>
+            <p>{data.operatingDay.replace(/\+/, ", ") + " 이용가능"}</p>
         </Info>}
         <DetailInfo>
             <span>평일 :</span>
-            <p>{info.operatingStartTime}~{info.operatingEndTime}</p>
+            <p>{data.operatingStartTime}~{data.operatingEndTime}</p>
         </DetailInfo>
         <DetailInfo>
             <span>주말 :</span>
-            <p>{info.operatingSatStartTime}~{info.operatingSatEndTime}</p>
+            <p>{data.operatingSatStartTime}~{data.operatingSatEndTime}</p>
         </DetailInfo>
         <DetailInfo>
             <span>공휴일 :</span>
-            <p>{info.operatingHolidayStartTime}~{info.operatingHolidayEndTime}</p>
+            <p>{data.operatingHolidayStartTime}~{data.operatingHolidayEndTime}</p>
         </DetailInfo>
         <Divider />
         <Price>
             <IoPricetag size={'20px'} />
-            <span>요금 : {info.priceInformation}</span>
+            <span>요금 : {data.priceInformation}</span>
         </Price>
         <DetailInfo>
             <span>기본시간 :</span>
-            <p>{info.basicTime} 분</p>
+            <p>{data.basicTime} 분</p>
         </DetailInfo>
         <DetailInfo>
             <span>기본요금 :</span>
-            <p>{info.nomalPrice} 원</p>
+            <p>{data.nomalPrice} 원</p>
         </DetailInfo>
         <DetailInfo>
             <span>추가요금 :</span>
-            <p>{info.perTime}분당 {info.perPrice} 원</p>
+            <p>{data.perTime}분당 {data.perPrice} 원</p>
         </DetailInfo>
-        {info.dayPrice > 0 && <DetailInfo>
+        {data.dayPrice > 0 && <DetailInfo>
             <span>일일 요금 :</span>
-            <p>{info.dayPrice} 원</p>
+            <p>{data.dayPrice} 원</p>
         </DetailInfo>}
-        {info.regularPrice > 0 && <DetailInfo>
+        {data.regularPrice > 0 && <DetailInfo>
             <span>정기권 요금 :</span>
-            <p>{info.regularPrice} 원</p>
+            <p>{data.regularPrice} 원</p>
         </DetailInfo>}
-        {info.payment &&
+        {data.payment &&
             <DetailInfo>
                 <span>결제방법 :</span>
-                <p>{info.payment.replace(/\+/, ", ")}</p>
+                <p>{data.payment.replace(/\+/, ", ")}</p>
             </DetailInfo>
         }
         <Divider />
@@ -80,24 +89,24 @@ export const Detail = ({ info }: DetailProps) => {
             <MdMessage size={'20px'} />
             <p>기타사항</p>
         </Info>
-        {info.otherMatters && <DetailInfo>
+        {data.otherMatters && <DetailInfo>
             <span>-</span>
-            <p>{info.otherMatters.replace(/\+/, ", ")}</p>
+            <p>{data.otherMatters.replace(/\+/, ", ")}</p>
         </DetailInfo>}
         <DetailInfo>
             <span>- 관리기관 :</span>
-            <p>{info.managementAgency}</p>
+            <p>{data.managementAgency}</p>
         </DetailInfo>
         <DetailInfo>
             <span>- 문의번호 :</span>
-            <p>{info.telNumber}</p>
+            <p>{data.telNumber}</p>
         </DetailInfo>
         <DetailInfo>
             <span>- 업데이트 날짜 :</span>
-            <p>{info.updatedAt}</p>
+            <p>{data.updatedAt}</p>
         </DetailInfo>
         <AricleEnd />
-        <CommentList parkingLotId={info.id}/>
+        <CommentList parkingLotId={parkingLotId} />
     </Container>
 }
 
