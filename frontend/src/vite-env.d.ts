@@ -16,4 +16,7 @@ declare interface MarkerClusteringOptions {
 
 declare class MarkerClustering {
     constructor(options?: MarkerClusteringOptions);
+
+    onRemove: () => void;
+    setMarkers: (markers: Array<naver.maps.Marker>) => void;
 }

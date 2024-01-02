@@ -12,8 +12,8 @@ interface UseMapTypes {
 export const useMap = ({ markers }: UseMapTypes) => {
     const targetEle = useRef<HTMLDivElement | null>(null);
     const mapInstance = useRef<naver.maps.Map>();
+    const cluster = useRef<MarkerClustering | null>(null)
 
-    const [cluster, setCluster] = useState<MarkerClustering>();
     const [onFocusMarkerId, setOnFocusMarkerId] = useState<number>()
 
     useEffect(() => {
@@ -36,12 +36,12 @@ export const useMap = ({ markers }: UseMapTypes) => {
 
         const clickEvents: Array<naver.maps.MapEventListener> = [];
 
-        const map = new NaverMap(mapInstance.current, markers);
+        let map = new NaverMap(mapInstance.current, markers);
 
         const idleEvent = naver.maps.Event.addListener(mapInstance.current, 'idle', () => map.filterOutMarkers());
 
         for (const [i, marker] of map.getMarkerInstance().entries()) {
-            const clickEvent = naver.maps.Event.addListener(marker, 'click', async() => {
+            const clickEvent = naver.maps.Event.addListener(marker, 'click', async () => {
                 map.focusMarkers(marker);
                 setOnFocusMarkerId(markers[i].id);
             })
@@ -49,34 +49,40 @@ export const useMap = ({ markers }: UseMapTypes) => {
             clickEvents.push(clickEvent);
         }
 
-        setCluster(
-            new MarkerClustering({
-                ...CLUSTER_OPTIONS,
-                map: mapInstance.current,
-                icons: [Cluster_1, Cluster_2],
-                indexGenerator: [20, 50],
-                markers: map.getMarkerInstance(),
-                stylingFunction: (clusterMarker, count) => {
-                    const container = clusterMarker.getElement();
-                    const contentElement = container.querySelector(".content") as HTMLDivElement;
+        cluster.current = createCluster(map);
 
-                    contentElement.textContent = count;
-                }
-            }))
+        if (!map.checkRenderMarker() && map.getMarkerInstance().length > 0) {
+            const marker = map.getMarkerInstance()[0];
+
+            mapInstance.current.panTo(marker.getPosition());
+        }
 
         return () => {
-            naver.maps.Event.removeListener(idleEvent);
+            naver.maps.Event.removeListener([idleEvent, ...clickEvents]);
 
-            if (clickEvents.length) {
-                for (const event of clickEvents) {
-                    naver.maps.Event.removeListener(event);
-                }
-            }
-            
+            cluster.current?.onRemove();
+            cluster.current?.setMarkers([]);
+
             map.clearMarker();
         }
 
     }, [markers])
+
+    const createCluster = (map: NaverMap) => {
+        return new MarkerClustering({
+            ...CLUSTER_OPTIONS,
+            map: map.getMapInstance(),
+            icons: [Cluster_1, Cluster_2],
+            indexGenerator: [20, 50],
+            markers: map.getMarkerInstance(),
+            stylingFunction: (clusterMarker, count) => {
+                const container = clusterMarker.getElement();
+                const contentElement = container.querySelector(".content") as HTMLDivElement;
+
+                contentElement.textContent = count;
+            }
+        });
+    }
 
     return {
         targetEle,

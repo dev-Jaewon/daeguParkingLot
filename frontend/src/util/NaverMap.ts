@@ -61,8 +61,20 @@ export class NaverMap {
         }
     }
 
-    clearMarker(){
+    clearMarker() {
         this.markerInstance.forEach(marker => marker.setMap(null));
+    }
+
+    checkRenderMarker(): Boolean {
+        const mapBounds = this.mapInstance.getBounds() as naver.maps.LatLngBounds;
+
+        for (let i = 0; i < this.markerInstance.length; i++) {
+            const position = this.markerInstance[i].getPosition();
+            
+            if(mapBounds.hasLatLng(position)) return true;
+        }
+
+        return false;
     }
 
     private showMarker(marker: naver.maps.Marker): void {
@@ -84,8 +96,12 @@ export class NaverMap {
         return value ? value[0] : "";
     }
 
-    getMarkerInstance() {
+    getMarkerInstance(): Array<naver.maps.Marker>{
         return this.markerInstance;
+    }
+
+    getMapInstance(): naver.maps.Map{
+        return this.mapInstance;
     }
 
 }
