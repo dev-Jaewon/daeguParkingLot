@@ -14,10 +14,11 @@ import { DEFAULT_INFO, DEFAULT_LOCATION } from './Constant';
 
 function App() {
   const [searchInfo, setSearchInfo] = useState<SearchParkList>(Object.assign(DEFAULT_INFO, DEFAULT_LOCATION));
+  const [detailParkingLotId, setDetailParkingLotId] = useState<number | null>(null);
 
   const { data, isLoading, isFetching } = useSearchQuery(searchInfo);
 
-  const { mapInstance, targetEle, focusParkingLotIndex, setFocusParkingLotIndex } = useMap({ markers: data?.markers || [] });
+  const { mapInstance, targetEle, onFocusMarkerId } = useMap({ markers: data?.markers || [] });
 
   const { ref, current } = useIntersect(() => {
     if (isFetching || data?.page === data?.lastPage) return;
@@ -31,16 +32,15 @@ function App() {
       scrollTarget?.scroll(0, 0);
     }
 
-    setFocusParkingLotIndex(null);
+    setDetailParkingLotId(null);
   }, [searchInfo.lat, searchInfo.lot, searchInfo.content])
 
   useEffect(() => {
-    
-    mapInstance.current?.autoResize();
+    if (onFocusMarkerId) setDetailParkingLotId(onFocusMarkerId);
+    else mapInstance.current?.autoResize();
+  }, [onFocusMarkerId])
 
-  }, [focusParkingLotIndex])
-
-  const handleClickCloseDetail = () => setFocusParkingLotIndex(null);
+  const handleClickCloseDetail = () => { setDetailParkingLotId(null) };
 
   return (
     <Container>
@@ -49,11 +49,13 @@ function App() {
         <Nav setPosition={setSearchInfo} isLoading={isLoading} mapInstance={mapInstance.current} />
       </MapContainer>
       {
-        focusParkingLotIndex !== null && data && <DetailContainer>
+        detailParkingLotId !== null && <DetailContainer>
           <CloseButton onClick={handleClickCloseDetail}>
             <IoIosArrowForward size={60} />
           </CloseButton>
-          <Detail info={data.markers[focusParkingLotIndex]} />
+          <>
+            {detailParkingLotId && <Detail parkingLotId={detailParkingLotId} />}
+          </>
         </DetailContainer>
       }
       <SideContainer>
@@ -64,7 +66,7 @@ function App() {
           ref={ref}
           isLoading={isLoading}
           markers={data?.list || []}
-          setSelectPark={setFocusParkingLotIndex}
+          setSelectPark={setDetailParkingLotId}
           mapInstance={mapInstance.current}
         />
       </SideContainer>

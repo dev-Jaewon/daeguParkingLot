@@ -61,6 +61,10 @@ export class NaverMap {
         }
     }
 
+    clearMarker(){
+        this.markerInstance.forEach(marker => marker.setMap(null));
+    }
+
     private showMarker(marker: naver.maps.Marker): void {
         if (marker.getMap()) return;
         marker.setMap(this.mapInstance);

@@ -13,8 +13,8 @@ export const useMap = ({ markers }: UseMapTypes) => {
     const targetEle = useRef<HTMLDivElement | null>(null);
     const mapInstance = useRef<naver.maps.Map>();
 
-    const [focusParkingLotIndex, setFocusParkingLotIndex] = useState<number | null>(null)
     const [cluster, setCluster] = useState<MarkerClustering>();
+    const [onFocusMarkerId, setOnFocusMarkerId] = useState<number>()
 
     useEffect(() => {
         if (targetEle?.current) {
@@ -41,9 +41,9 @@ export const useMap = ({ markers }: UseMapTypes) => {
         const idleEvent = naver.maps.Event.addListener(mapInstance.current, 'idle', () => map.filterOutMarkers());
 
         for (const [i, marker] of map.getMarkerInstance().entries()) {
-            const clickEvent = naver.maps.Event.addListener(marker, 'click', () => {
+            const clickEvent = naver.maps.Event.addListener(marker, 'click', async() => {
                 map.focusMarkers(marker);
-                setFocusParkingLotIndex(i);
+                setOnFocusMarkerId(markers[i].id);
             })
 
             clickEvents.push(clickEvent);
@@ -72,6 +72,8 @@ export const useMap = ({ markers }: UseMapTypes) => {
                     naver.maps.Event.removeListener(event);
                 }
             }
+            
+            map.clearMarker();
         }
 
     }, [markers])
@@ -79,7 +81,6 @@ export const useMap = ({ markers }: UseMapTypes) => {
     return {
         targetEle,
         mapInstance,
-        focusParkingLotIndex,
-        setFocusParkingLotIndex
+        onFocusMarkerId
     }
 }
