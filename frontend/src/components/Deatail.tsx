@@ -13,7 +13,8 @@ interface DetailProps {
 
 export const Detail = ({ parkingLotId }: DetailProps) => {
     const { data, isFetching } = useQuery<ParkingLot>({
-        queryKey: ['detail', parkingLotId], queryFn: () => getDetailInfo(parkingLotId)
+        queryKey: ['detail', parkingLotId], queryFn: () => getDetailInfo(parkingLotId),
+        staleTime: 30000,
     });
 
     if (!data) {

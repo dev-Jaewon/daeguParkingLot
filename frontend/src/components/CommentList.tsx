@@ -19,7 +19,9 @@ export const CommentList = ({ parkingLotId }: CommentListType) => {
     const [modifyCommentId, setModifyCommentId] = useState<number>(0);
 
     const comments = useQuery({
-        queryKey: ['commentList', parkingLotId], queryFn: () => commentList(parkingLotId), initialData: []
+        queryKey: ['commentList', parkingLotId], 
+        queryFn: () => commentList(parkingLotId),
+        staleTime: 30000
     });
 
     const mutation = useMutation({
@@ -36,7 +38,7 @@ export const CommentList = ({ parkingLotId }: CommentListType) => {
         <WriteComment parkingLotId={parkingLotId} />
         <ReviewContents>
             {
-                comments.data.length > 0 ?
+                comments.data?.length > 0 ?
                     comments.data.map((c: any) =>
                         <Review key={c.id}>
                             <div className='review_info'>
