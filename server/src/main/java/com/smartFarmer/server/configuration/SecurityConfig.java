@@ -9,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -24,6 +25,7 @@ import com.smartFarmer.server.configuration.service.UserDetailServiceImpl;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Autowired
@@ -38,7 +40,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(){
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter();
     }
 
@@ -57,14 +59,16 @@ public class SecurityConfig {
         return authProvider;
     }
 
+    @Autowired
+    public JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.csrf(csrf -> csrf
                 .disable())
                 .authorizeHttpRequests((authz) -> authz
-                    .requestMatchers(HttpMethod.PUT, "/comment").hasRole("USER")
-                    .requestMatchers(HttpMethod.GET, "/account").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT, "/comment").hasRole("USER")
                         .anyRequest().permitAll());
 
         http.cors(cors -> cors
@@ -75,6 +79,9 @@ public class SecurityConfig {
                 .userDetailsService(customUserDetailsService);
 
         http.authenticationProvider(authenticationProvider());
+
+
+        http.exceptionHandling((exception)-> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint));
 
         return http.build();
     }
