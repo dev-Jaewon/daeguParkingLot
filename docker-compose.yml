@@ -1,0 +1,14 @@
+name: parking-lot
+services:
+  db:
+    image: postgres:16.1
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: postgres
+    ports:
+      - 1234:5432
+    expose:
+      - 1234
+    volumes:
+      - ./data:/var/lib/postgresql/data
