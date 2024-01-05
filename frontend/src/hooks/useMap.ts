@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { DEFAULT_LOCATION } from '../Constant';
 import { ParkingLot } from '../types/ParkingLot';
-import { NaverMap } from '../util/NaverMap';
+import { NaverMap } from '../utils/NaverMap';
 import { CLUSTER_OPTIONS } from '../Constant';
 import { Cluster_1, Cluster_2 } from '../components/Cluster';
 
