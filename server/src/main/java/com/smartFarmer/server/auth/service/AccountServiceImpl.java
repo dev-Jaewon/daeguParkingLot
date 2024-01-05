@@ -5,6 +5,7 @@ import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +28,7 @@ import com.smartFarmer.server.configuration.JwtProvider;
 import com.smartFarmer.server.configuration.service.UserDetailsImpl;
 import com.smartFarmer.server.constance.Roles;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
@@ -96,10 +98,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public ResponseEntity<Boolean> refreshToken(HttpServletRequest request) {
-        String refreshToken = WebUtils.getCookie(request, "refreshCookie").getValue();
+        Cookie refreshToken = WebUtils.getCookie(request, "refreshCookie");
+        
+        if(refreshToken == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
 
         return refreshTokenService
-                .findFromRepo(refreshToken)
+                .findFromRepo(refreshToken.getValue())
                 .map(refreshTokenService::checkExpired)
                 .map(RefreshTokenEntity::getAccount)
                 .map(account -> {

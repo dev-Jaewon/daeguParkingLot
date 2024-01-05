@@ -22,7 +22,6 @@ api.interceptors.response.use(((response) => response), async (error) => {
 
     if (error.response?.status === HttpStatusCode.Unauthorized) {
         try {
-            originalRequest._retry = true;
             const refresh = await api.get('/auth/refresh');
 
             if (refresh.status === 200) {
@@ -30,10 +29,6 @@ api.interceptors.response.use(((response) => response), async (error) => {
             }
 
         } catch (refetchError) {
-
-            if (originalRequest.url !== '/account') {
-                history.push('/auth/login');
-            }
 
             return Promise.reject(refetchError);
         }
