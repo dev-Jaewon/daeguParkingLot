@@ -3,13 +3,14 @@ import { SearchParkList } from "../types/SearchParkList";
 import { SignUpType } from "../types/SignUp";
 import { LoginType } from "../types/Login";
 import { RequestAddComment } from "../types/RequestAddComment";
-import { history } from "../history";
 import { ModifyCommen } from "../types/ModifyComment";
+import { delayApi } from "./delayApi";
 
 const api = axios.create({
     baseURL:
         "http://localhost:8080",
-    withCredentials: true
+    withCredentials: true,
+    timeout: 3000
 });
 
 api.interceptors.request.use(
@@ -38,9 +39,9 @@ api.interceptors.response.use(((response) => response), async (error) => {
 });
 
 export const getSearch = async (searchParkList: SearchParkList) => {
-    return await api.get("/parkingLot/search", {
-        params: searchParkList
-    }).then(res => res.data);
+    const fetch = api.get("/parkingLot/search", { params: searchParkList });
+
+    return await delayApi(fetch, 1000).then(res => res.data);
 }
 
 export const checkEmail = async (email: string) => {

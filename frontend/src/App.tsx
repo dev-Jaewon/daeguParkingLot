@@ -46,7 +46,7 @@ function App() {
     <Container>
       <MapContainer>
         <Map ref={targetEle} />
-        <Nav setPosition={setSearchInfo} isLoading={isLoading} mapInstance={mapInstance.current} />
+        <Nav setPosition={setSearchInfo} isLoading={isFetching} mapInstance={mapInstance.current} />
       </MapContainer>
       {
         detailParkingLotId !== null && <DetailContainer>
