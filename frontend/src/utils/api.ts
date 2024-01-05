@@ -20,8 +20,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(((response) => response), async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === HttpStatusCode.Unauthorized
-        || error.response?.status === HttpStatusCode.Forbidden) {
+    if (error.response?.status === HttpStatusCode.Unauthorized) {
         try {
             originalRequest._retry = true;
             const refresh = await api.get('/auth/refresh');
@@ -86,5 +85,5 @@ export const removeComment = async (id: number) => {
 }
 
 export const modifyCommen = async (modifyCommen: ModifyCommen) => {
-    return await api.put(`/comment`,modifyCommen).then(res => res.data);
+    return await api.put(`/comment`, modifyCommen).then(res => res.data);
 }
