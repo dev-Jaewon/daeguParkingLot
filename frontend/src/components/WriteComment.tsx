@@ -4,13 +4,16 @@ import { FormEvent } from 'react';
 import { writeComment } from '../utils/api';
 import { RequestAddComment } from '../types/RequestAddComment';
 import { useAccount } from '../hooks/useAccount';
+import { useNavigate } from 'react-router-dom';
 
 interface WriteCommentType {
     parkingLotId: number;
 }
 
 export const WriteComment = ({ parkingLotId }: WriteCommentType) => {
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
+    
     const { data } = useAccount();
 
     const mutation = useMutation({
@@ -41,8 +44,12 @@ export const WriteComment = ({ parkingLotId }: WriteCommentType) => {
             data.email ? <form onSubmit={handleSubmit}><div className='input_Container'>
                 <input type="text" placeholder='코멘트를 남겨주세요.' name='comment' />
             </div>
-                <button>작성하기</button>
-            </form> : <div>로그인 하시면 댓글을 다실 수 있습니다.</div>
+                <button className='button'>작성하기</button>
+            </form> :
+                <LoginNoticContainer>
+                    <div className='guid_content'>로그인 하시면 댓글을 다실 수 있습니다.</div>
+                    <LoginButton onClick={() => navigate('/auth/login')}>로그인하기</LoginButton>
+                </LoginNoticContainer>
         }
     </WirteComment>
 }
@@ -83,7 +90,7 @@ const WirteComment = styled.div`
         }
     }
 
-    button {
+    .button {
         width: 80px;
         height: 40px;
         border: none;
@@ -94,3 +101,26 @@ const WirteComment = styled.div`
     }
 `;
 
+const LoginNoticContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 20px;
+
+    .guid_content {
+        text-align: center;
+        font-size: 0.8rem;
+    }
+`
+
+const LoginButton = styled.button`
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.7rem;
+        background-color: #717cff;
+        padding: 10px 20px;
+        color: #fff;
+        cursor: pointer;
+`;
