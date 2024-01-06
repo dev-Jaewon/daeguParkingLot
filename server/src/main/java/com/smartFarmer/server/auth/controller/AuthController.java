@@ -29,7 +29,7 @@ public class AuthController {
     private AccountService accountService;
 
     @PostMapping("/auth/signup")
-    public ResponseEntity<Void> signUp(@RequestBody RequestSignupDto requestSignupDto) {
+    public ResponseEntity<Void> signUp(@RequestBody RequestSignupDto requestSignupDto)throws Exception {
         return accountService.signup(requestSignupDto);
     }
 

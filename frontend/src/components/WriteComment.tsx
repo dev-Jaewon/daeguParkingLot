@@ -41,7 +41,7 @@ export const WriteComment = ({ parkingLotId }: WriteCommentType) => {
 
     return <WirteComment>
         {
-            data.email ? <form onSubmit={handleSubmit}><div className='input_Container'>
+            data ? <form onSubmit={handleSubmit}><div className='input_Container'>
                 <input type="text" placeholder='코멘트를 남겨주세요.' name='comment' />
             </div>
                 <button className='button'>작성하기</button>

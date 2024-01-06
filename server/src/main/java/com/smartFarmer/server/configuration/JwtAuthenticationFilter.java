@@ -34,23 +34,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String accessToken = jwtProvider.getTokenFromHttp(request, "accessCookie");
 
         if (accessToken != null) {
-            try {
-                String email = jwtProvider.getEmailFromToken(accessToken);
 
-                AccountEntity account = accountService.findByEmail(email);
+            String email = jwtProvider.getEmailFromToken(accessToken);
 
-                List<SimpleGrantedAuthority> roles = account.getRoles()
-                        .stream()
-                        .map(v -> v.getName().toString())
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+            AccountEntity account = accountService.findByEmail(email);
 
-                Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        email, null, roles);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            List<SimpleGrantedAuthority> roles = account.getRoles()
+                    .stream()
+                    .map(v -> v.getName().toString())
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
 
-            } catch (Exception e) {
-            }
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    email, null, roles);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
         }
 
         filterChain.doFilter(request, response);

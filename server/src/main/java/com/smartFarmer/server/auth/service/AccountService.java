@@ -10,7 +10,7 @@ import com.smartFarmer.server.auth.entity.AccountEntity;
 import jakarta.servlet.http.HttpServletRequest;
 
 public interface AccountService {
-    public ResponseEntity<Void> signup(RequestSignupDto requestSignupDto);
+    public ResponseEntity<Void> signup(RequestSignupDto requestSignupDto) throws Exception;
 
     public ResponseEntity<Boolean> checkEmail(String email);
 

@@ -27,6 +27,7 @@ import com.smartFarmer.server.auth.repository.RolesRepository;
 import com.smartFarmer.server.configuration.JwtProvider;
 import com.smartFarmer.server.configuration.service.UserDetailsImpl;
 import com.smartFarmer.server.constance.Roles;
+import com.smartFarmer.server.exceptions.exception.ServerErrorException;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -52,7 +53,7 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private RefreshTokenService refreshTokenService;
 
-    public ResponseEntity<Void> signup(RequestSignupDto requestSignupDto) {
+    public ResponseEntity<Void> signup(RequestSignupDto requestSignupDto)throws Exception {
 
         String encodePassword = passwordEncoder.encode(requestSignupDto.getPassword());
 
@@ -64,7 +65,7 @@ public class AccountServiceImpl implements AccountService {
         RolesEntity findRole = rolesRepository.findByName(Roles.ROLE_USER);
 
         if (findRole == null) {
-            return ResponseEntity.ok().body(null);
+            throw new ServerErrorException("DB에 등록된 권한이 없습니다.");
         }
 
         role.add(findRole);

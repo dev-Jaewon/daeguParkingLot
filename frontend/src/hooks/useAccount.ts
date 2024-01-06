@@ -6,12 +6,7 @@ export const useAccount = () => {
     const { data, isLoading } = useQuery<Account>({
         queryKey: ['account'],
         queryFn: account,
-        placeholderData: previousData => previousData,
-        initialData: {
-            id: 0,
-            email: "",
-            nickname: ""
-        }
+        placeholderData: previousData => previousData
     });
 
     return { data, isLoading }
