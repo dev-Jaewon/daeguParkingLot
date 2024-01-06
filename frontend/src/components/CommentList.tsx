@@ -45,7 +45,7 @@ export const CommentList = ({ parkingLotId }: CommentListType) => {
                                 <div className='nick_name'>
                                     <FaUser /> {c.nickname}
                                     {
-                                        c.nickname === account.data.nickname &&
+                                        c.nickname === account.data?.nickname &&
                                         <ModifyButtonCointainer>
                                             {
                                                 modifyCommentId === 0 ?
