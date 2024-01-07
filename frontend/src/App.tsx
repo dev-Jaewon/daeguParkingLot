@@ -21,9 +21,11 @@ function App() {
   const { mapInstance, targetEle, onFocusMarkerId } = useMap({ markers: data?.markers || [] });
 
   const { ref, current } = useIntersect(() => {
-    if (isFetching || data && data?.page >= data?.lastPage) return;
+    
+    if( data && data?.page < data?.lastPage && !isFetching && !isLoading ){
+      setSearchInfo(preV => ({ ...preV, page: preV.page + 1 }));
+    }
 
-    setSearchInfo(preV => ({ ...preV, page: preV.page + 1 }));
   }, 0.1);
 
   useEffect(() => {
