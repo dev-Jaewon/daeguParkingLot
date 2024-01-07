@@ -4,6 +4,7 @@ import { ParkingLot } from '../types/ParkingLot';
 import { NaverMap } from '../utils/NaverMap';
 import { CLUSTER_OPTIONS } from '../Constant';
 import { Cluster_1, Cluster_2 } from '../components/Cluster';
+import { MarkerClusteringOptions, MarkerClusteringWrapper } from '../utils/MarkerClusteringWrapper';
 
 interface UseMapTypes {
     markers: Array<ParkingLot>
@@ -12,7 +13,7 @@ interface UseMapTypes {
 export const useMap = ({ markers }: UseMapTypes) => {
     const targetEle = useRef<HTMLDivElement | null>(null);
     const mapInstance = useRef<naver.maps.Map>();
-    const cluster = useRef<MarkerClustering | null>(null)
+    const cluster = useRef<MarkerClusteringWrapper | null>(null)
 
     const [onFocusMarkerId, setOnFocusMarkerId] = useState<number>()
 
@@ -60,8 +61,11 @@ export const useMap = ({ markers }: UseMapTypes) => {
         return () => {
             naver.maps.Event.removeListener([idleEvent, ...clickEvents]);
 
-            cluster.current?.onRemove();
-            cluster.current?.setMarkers([]);
+            if(cluster.current){
+                cluster.current.markerClustering.onRemove();
+                cluster.current.markerClustering.setMarkers([]);
+            }
+
 
             map.clearMarker();
         }
@@ -69,19 +73,23 @@ export const useMap = ({ markers }: UseMapTypes) => {
     }, [markers])
 
     const createCluster = (map: NaverMap) => {
-        return new MarkerClustering({
+        const option: MarkerClusteringOptions = {
             ...CLUSTER_OPTIONS,
             map: map.getMapInstance(),
             icons: [Cluster_1, Cluster_2],
             indexGenerator: [20, 50],
             markers: map.getMarkerInstance(),
             stylingFunction: (clusterMarker, count) => {
+                if(!clusterMarker) return;
+
                 const container = clusterMarker.getElement();
                 const contentElement = container.querySelector(".content") as HTMLDivElement;
 
-                contentElement.textContent = count;
+                contentElement.textContent = String(count);
             }
-        });
+        }
+
+        return new MarkerClusteringWrapper(naver, option);
     }
 
     return {
