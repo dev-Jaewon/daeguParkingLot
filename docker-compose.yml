@@ -1,6 +1,6 @@
 name: parking-lot
 services:
-  db:
+  postgres:
     image: postgres:16.1
     environment:
       POSTGRES_USER: postgres
@@ -12,3 +12,25 @@ services:
       - 1234
     volumes:
       - ./data:/var/lib/postgresql/data
+
+  maven:
+    image: maven:3.9.5
+    volumes:
+      - ./server:/server
+    working_dir: /server
+    command: mvn clean install -Dmaven.test.skip=true
+
+  backend:
+    image: openjdk:21
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    volumes:
+      - ./server:/server
+    working_dir: /server/target
+    command: java -jar server-0.0.1-SNAPSHOT.jar
+    depends_on:
+      maven:
+        condition: service_completed_successfully
+    
