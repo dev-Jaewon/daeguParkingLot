@@ -39,7 +39,7 @@ services:
     volumes:
       - ./frontend:/fontend
     working_dir: /fontend
-    command: npm run build
+    command: sh -c "npm install && npm run build"
 
   fontend:
     image: nginx:1.25.3
