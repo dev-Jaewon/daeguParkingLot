@@ -14,11 +14,11 @@ services:
       - ./data:/var/lib/postgresql/data
 
   maven:
-    image: maven:3.9.5
+    image: maven:3.9.5-eclipse-temurin-21-alpine
     volumes:
       - ./server:/server
     working_dir: /server
-    command: mvn clean install -Dmaven.test.skip=true
+    command: mvn clean install -U -Dmaven.test.skip=true
 
   backend:
     image: openjdk:21
