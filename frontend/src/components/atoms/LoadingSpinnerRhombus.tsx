@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 
-export const ListLoading = () => {
+export const LoadingSpinnerRhombus = () => {
     return (
         <Container>
             <span className="loader"></span>

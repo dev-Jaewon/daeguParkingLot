@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const LoadingDetail = () => {
+export const LoadingSpinnerSpead = () => {
     return (
         <Container>
             <div className="lds-ripple"><div></div><div></div></div>

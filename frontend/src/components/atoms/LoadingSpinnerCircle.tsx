@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const Loading = () => {
+export const LoadingSpinnerCircle = () => {
     return (
         <Container>
             <div className="loading-box">

@@ -2,27 +2,27 @@ import styled from '@emotion/styled';
 import { MdLocationOn, MdAccessTimeFilled, MdMessage } from "react-icons/md";
 import { IoPricetag } from "react-icons/io5";
 import { CommentList } from './CommentList';
-import { ParkingLot } from '../types/ParkingLot';
+import { ParkingLot } from '../../types/ParkingLot';
 import { useQuery } from '@tanstack/react-query';
-import { getDetailInfo } from '../utils/api';
-import { LoadingDetail } from './LoadingDetail';
+import { getDetailInfo } from '../../utils/api';
+import { LoadingSpinnerSpead } from '../atoms/LoadingSpinnerSpead';
 
 interface DetailProps {
     parkingLotId: number,
 }
 
-export const Detail = ({ parkingLotId }: DetailProps) => {
+export const DetailParkingLog = ({ parkingLotId }: DetailProps) => {
     const { data, isFetching } = useQuery<ParkingLot>({
         queryKey: ['detail', parkingLotId], queryFn: () => getDetailInfo(parkingLotId),
         staleTime: 30000,
     });
 
-    if (!data) {
-        return <div>NO DATA</div>
+    if(isFetching){
+        return <LoadingSpinnerSpead />
     }
 
-    if(isFetching){
-        return <LoadingDetail />
+    if (!data) {
+        return <div>NO DATA</div>
     }
 
     return <Container className='scroll-y'>

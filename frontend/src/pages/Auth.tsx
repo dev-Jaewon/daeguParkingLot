@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { SignUp } from '../components/Signup';
+import { SignUp } from '../components/pages/Signup';
 
 export const Auth = () => {
     return <Container>

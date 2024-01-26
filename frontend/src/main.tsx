@@ -5,9 +5,9 @@ import './styles/common.scss'
 
 import styled from '@emotion/styled'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { CustomRouter } from './CustomRouter.tsx';
+import { CustomRouter } from './route/CustomRouter.tsx';
 import { history } from './history.ts';
-import { RouteList } from './Routes.tsx';
+import { RouteList } from './route/Routes.tsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {

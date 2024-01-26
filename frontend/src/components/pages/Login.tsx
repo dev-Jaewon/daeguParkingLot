@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { InputValid } from './InputValid';
-import { LoginType } from '../types/Login';
+import { InputValid } from '../atoms/InputValid';
+import { LoginType } from '../../types/Login';
 import { useMutation } from '@tanstack/react-query';
-import { login } from '../utils/api';
+import { login } from '../../utils/api';
 
 export const Login = () => {
     const { handleSubmit, register, formState: { errors } } = useForm<LoginType>();

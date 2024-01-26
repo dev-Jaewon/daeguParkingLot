@@ -3,7 +3,7 @@ import { DEFAULT_LOCATION } from '../Constant';
 import { ParkingLot } from '../types/ParkingLot';
 import { NaverMap } from '../utils/NaverMap';
 import { CLUSTER_OPTIONS } from '../Constant';
-import { Cluster_1, Cluster_2 } from '../components/Cluster';
+import { Cluster_1, Cluster_2 } from '../components/atoms/Cluster';
 import { MarkerClusteringOptions, MarkerClusteringWrapper } from '../utils/MarkerClusteringWrapper';
 
 interface UseMapTypes {

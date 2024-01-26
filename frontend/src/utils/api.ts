@@ -69,7 +69,9 @@ export const commentList = async (parkingLotId: number) => {
 }
 
 export const getDetailInfo = async (parkingLotId: number) => {
-    return await api.get(`/parkingLot/detail/${parkingLotId}`).then(res => res.data);
+    const fetch = api.get(`/parkingLot/detail/${parkingLotId}`);
+
+    return await delayApi(fetch, 1000).then(res => res.data);
 }
 
 export const account = async () => {

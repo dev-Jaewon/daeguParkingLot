@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, forwardRef } from 'react';
 import styled from '@emotion/styled';
-import { ParkingLot } from '../types/ParkingLot';
-import { ListLoading } from './ListLoading';
+import { ParkingLot } from '../../types/ParkingLot';
+import { LoadingSpinnerRhombus } from '../atoms/LoadingSpinnerRhombus';
 
 interface ListProps {
     markers: Array<ParkingLot>
@@ -10,7 +10,7 @@ interface ListProps {
     mapInstance?: naver.maps.Map;
 }
 
-export const List = forwardRef(({ markers, setSelectPark, isLoading, mapInstance }: ListProps, ref: any) => {
+export const ParkingLotList = forwardRef(({ markers, setSelectPark, isLoading, mapInstance }: ListProps, ref: any) => {
     const handleClickParkingLot = (index: number) => {
         setSelectPark(markers[index].id);
 
@@ -50,7 +50,7 @@ export const List = forwardRef(({ markers, setSelectPark, isLoading, mapInstance
                     <ScrollTarget ref={ref} />
                 </>
                 :
-                <ListLoading />
+                <LoadingSpinnerRhombus />
         }
     </Container>
 });

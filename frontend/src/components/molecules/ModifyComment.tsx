@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FormEvent, useState } from 'react';
-import { ModifyCommen } from '../types/ModifyComment';
-import { modifyCommen } from '../utils/api';
+import { ModifyCommen } from '../../types/ModifyComment';
+import { modifyCommen } from '../../utils/api';
 
 interface ModifyCommentType {
     commentId: number;

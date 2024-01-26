@@ -1,4 +1,4 @@
-import styles from '../styles/Cluster.module.scss';
+import styles from '../../styles/Cluster.module.scss';
 
 export const Cluster_1 = ({
     content:`

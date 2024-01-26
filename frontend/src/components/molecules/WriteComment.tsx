@@ -1,9 +1,9 @@
 import styled from '@emotion/styled'
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FormEvent } from 'react';
-import { writeComment } from '../utils/api';
-import { RequestAddComment } from '../types/RequestAddComment';
-import { useAccount } from '../hooks/useAccount';
+import { writeComment } from '../../utils/api';
+import { RequestAddComment } from '../../types/RequestAddComment';
+import { useAccount } from '../../hooks/useAccount';
 import { useNavigate } from 'react-router-dom';
 
 interface WriteCommentType {

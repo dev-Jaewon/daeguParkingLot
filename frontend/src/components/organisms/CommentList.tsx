@@ -1,12 +1,12 @@
 import styled from '@emotion/styled';
 import { FaUser } from 'react-icons/fa';
-import { WriteComment } from './WriteComment';
+import { WriteComment } from '../molecules/WriteComment';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { commentList, removeComment } from '../utils/api';
+import { commentList, removeComment } from '../../utils/api';
 import { FaRegComments } from "react-icons/fa";
-import { useAccount } from '../hooks/useAccount';
+import { useAccount } from '../../hooks/useAccount';
 import { useState } from 'react';
-import { ModifyComment } from './ModifyComment';
+import { ModifyComment } from '../molecules/ModifyComment';
 
 interface CommentListType {
     parkingLotId: number;

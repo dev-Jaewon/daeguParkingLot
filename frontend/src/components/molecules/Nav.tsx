@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { BiCurrentLocation } from "react-icons/bi";
-import { Loading } from './Loading';
-import { SearchParkList } from '../types/SearchParkList';
+import { LoadingSpinnerCircle } from '../atoms/LoadingSpinnerCircle';
+import { SearchParkList } from '../../types/SearchParkList';
 import { Dispatch, SetStateAction } from 'react';
 
 interface NavProps {
@@ -31,7 +31,7 @@ export const Nav = (props: NavProps) => {
             <>
                 {
                     props.isLoading
-                        ? <Loading />
+                        ? <LoadingSpinnerCircle />
                         : <SearchLocation onClick={handleCLickThisLocation}>현재 위치 조회</SearchLocation>
                 }
             </>

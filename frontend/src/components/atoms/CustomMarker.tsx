@@ -1,6 +1,6 @@
 import { MdLocalParking } from "react-icons/md";
 
-import styles from '../styles/Marker.module.scss';
+import styles from '../../styles/Marker.module.scss';
 import { renderToString } from "react-dom/server";
 
 export const Marker = (content: string): string => {

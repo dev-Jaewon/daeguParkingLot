@@ -1,4 +1,4 @@
-import { FocusMarker, Marker } from '../components/CustomMarker';
+import { FocusMarker, Marker } from '../components/atoms/CustomMarker';
 import { ParkingLot } from '../types/ParkingLot';
 
 export class NaverMap {

@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { List } from './components/List';
-import { useMap } from './hooks/useMap';
-import { Detail } from './components/Deatail';
-import { Nav } from './components/Nav';
-import { Logo } from './components/Logo';
-import { SearchBar } from './components/SearchBar';
+import { ParkingLotList } from '../organisms/ParkingLotList';
+import { useMap } from '../../hooks/useMap';
+import { DetailParkingLog } from '../organisms/Deatail';
+import { Nav } from '../molecules/Nav';
+import { Logo } from '../atoms/Logo';
+import { SearchBar } from '../molecules/SearchBar';
 import { IoIosArrowForward } from "react-icons/io";
-import { SearchParkList } from './types/SearchParkList';
-import { useIntersect } from './hooks/useIntercepter';
-import { useSearchQuery } from './hooks/useQuery';
-import { DEFAULT_INFO, DEFAULT_LOCATION } from './Constant';
+import { SearchParkList } from '../../types/SearchParkList';
+import { useIntersect } from '../../hooks/useIntercepter';
+import { useSearchQuery } from '../../hooks/useQuery';
+import { DEFAULT_INFO, DEFAULT_LOCATION } from '../../Constant';
 
 function App() {
   const [searchInfo, setSearchInfo] = useState<SearchParkList>(Object.assign(DEFAULT_INFO, DEFAULT_LOCATION));
@@ -56,7 +56,7 @@ function App() {
             <IoIosArrowForward size={60} />
           </CloseButton>
           <>
-            {detailParkingLotId && <Detail parkingLotId={detailParkingLotId} />}
+            {detailParkingLotId && <DetailParkingLog parkingLotId={detailParkingLotId} />}
           </>
         </DetailContainer>
       }
@@ -64,7 +64,7 @@ function App() {
         <Logo />
         <SearchBar setLocationTrigger={setSearchInfo} />
         <ResultCount>총 {data?.size}개의 검색 결과가 있습니다.</ResultCount>
-        <List
+        <ParkingLotList
           ref={ref}
           isLoading={isLoading}
           markers={data?.list || []}

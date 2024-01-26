@@ -1,14 +1,13 @@
 import { useEffect } from 'react';
 import { Controller, useForm } from "react-hook-form";
-import { useDebounce } from '../hooks/useDebounce';
-import { checkEmail, checkNickName, signup } from '../utils/api';
-import { InputValid } from './InputValid';
+import { useDebounce } from '../../hooks/useDebounce';
+import { checkEmail, checkNickName, signup } from '../../utils/api';
+import { InputValid } from '../atoms/InputValid';
 import { IoMailOutline, IoKeyOutline, IoAccessibilityOutline } from "react-icons/io5";
-import { EMAIL_REG, NICK_NAME_REG, PASSWORD_REG } from '../Constant';
-import { useCheckValid } from '../hooks/useCheckValid';
-import { SignUpType } from '../types/SignUp';
+import { EMAIL_REG, NICK_NAME_REG, PASSWORD_REG } from '../../Constant';
+import { useCheckValid } from '../../hooks/useCheckValid';
+import { SignUpType } from '../../types/SignUp';
 import { useMutation } from '@tanstack/react-query';
-import { LoadingButton } from './LoadingButton';
 import { useNavigate } from "react-router-dom";
 import styled from '@emotion/styled';
 
@@ -123,7 +122,11 @@ export const SignUp = () => {
                 }
                 rules={{ validate: (v) => nickNameValidate(v), required: '닉네임을 입력해주세요.' }}
             />
-            <LoadingButton value='회원가입' isLoading={mutation.isPending} />
+            <LoadingContainerButton>
+                {
+                    mutation.isPending ? '로딩중...' : '회원가입'
+                }
+            </LoadingContainerButton>
         </form>
         <CancelButton onClick={handleClickCancel}>취소</CancelButton>
     </Container>
@@ -170,3 +173,9 @@ const CancelButton = styled.button`
     cursor: pointer;
     transform: translate(-50%, -50%);
 `;
+
+const LoadingContainerButton = styled.button`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`

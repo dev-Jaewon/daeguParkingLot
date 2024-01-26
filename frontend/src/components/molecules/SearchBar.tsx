@@ -2,7 +2,7 @@ import { useRef, SetStateAction } from 'react';
 import styled from "@emotion/styled";
 import { Dispatch } from "react";
 import { IoSearch } from "react-icons/io5";
-import { SearchParkList } from '../types/SearchParkList';
+import { SearchParkList } from '../../types/SearchParkList';
 
 interface SearchBarType {
     setLocationTrigger: Dispatch<SetStateAction<SearchParkList>>
