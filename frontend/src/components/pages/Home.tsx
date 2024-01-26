@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { ParkingLotList } from '../organisms/ParkingLotList';
 import { useMap } from '../../hooks/useMap';
@@ -10,15 +10,17 @@ import { IoIosArrowForward } from "react-icons/io";
 import { SearchParkList } from '../../types/SearchParkList';
 import { useIntersect } from '../../hooks/useIntercepter';
 import { useSearchQuery } from '../../hooks/useQuery';
-import { DEFAULT_INFO, DEFAULT_LOCATION } from '../../Constant';
+import { DEFAULT_INFO, DEFAULT_LOCATION, DEFAULT_ZOOM, RANGE } from '../../Constant';
 
 function App() {
+  const range = useRef<keyof typeof RANGE>(DEFAULT_ZOOM);
+  
   const [searchInfo, setSearchInfo] = useState<SearchParkList>(Object.assign(DEFAULT_INFO, DEFAULT_LOCATION));
   const [detailParkingLotId, setDetailParkingLotId] = useState<number | null>(null);
 
-  const { data, isLoading, isFetching } = useSearchQuery(searchInfo);
+  const { data, isLoading, isFetching } = useSearchQuery(searchInfo, range.current);
 
-  const { mapInstance, targetEle, onFocusMarkerId } = useMap({ markers: data?.markers || [] });
+  const { mapInstance, targetEle, onFocusMarkerId, onChangeZoom } = useMap({ markers: data?.markers || [] });
 
   const { ref, current } = useIntersect(() => {
     
@@ -41,6 +43,10 @@ function App() {
     if (onFocusMarkerId) setDetailParkingLotId(onFocusMarkerId);
     else mapInstance.current?.autoResize();
   }, [onFocusMarkerId])
+
+  useEffect(() => {
+    if (onChangeZoom) range.current = onChangeZoom as keyof typeof RANGE
+  }, [onChangeZoom])
 
   const handleClickCloseDetail = () => { setDetailParkingLotId(null) };
 

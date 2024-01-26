@@ -16,6 +16,7 @@ export const useMap = ({ markers }: UseMapTypes) => {
     const cluster = useRef<MarkerClusteringWrapper | null>(null)
 
     const [onFocusMarkerId, setOnFocusMarkerId] = useState<number>()
+    const [onChangeZoom, setOnChangZoom] = useState<number>();
 
     useEffect(() => {
         if (targetEle?.current) {
@@ -35,11 +36,12 @@ export const useMap = ({ markers }: UseMapTypes) => {
     useEffect(() => {
         if (!mapInstance.current) return
 
-        const clickEvents: Array<naver.maps.MapEventListener> = [];
+        const events: Array<naver.maps.MapEventListener> = [];
 
         let map = new NaverMap(mapInstance.current, markers);
 
         const idleEvent = naver.maps.Event.addListener(mapInstance.current, 'idle', () => map.filterOutMarkers());
+        events.push(idleEvent);
 
         for (const [i, marker] of map.getMarkerInstance().entries()) {
             const clickEvent = naver.maps.Event.addListener(marker, 'click', async () => {
@@ -47,7 +49,7 @@ export const useMap = ({ markers }: UseMapTypes) => {
                 setOnFocusMarkerId(markers[i].id);
             })
 
-            clickEvents.push(clickEvent);
+            events.push(clickEvent);
         }
 
         cluster.current = createCluster(map);
@@ -58,8 +60,11 @@ export const useMap = ({ markers }: UseMapTypes) => {
             mapInstance.current.panTo(marker.getPosition());
         }
 
+        const zoomChangeEvent = naver.maps.Event.addListener(mapInstance.current, 'zoom_changed', (zoom) => setOnChangZoom(zoom));
+        events.push(zoomChangeEvent);
+
         return () => {
-            naver.maps.Event.removeListener([idleEvent, ...clickEvents]);
+            naver.maps.Event.removeListener(events);
 
             if(cluster.current){
                 cluster.current.markerClustering.onRemove();
@@ -95,6 +100,7 @@ export const useMap = ({ markers }: UseMapTypes) => {
     return {
         targetEle,
         mapInstance,
-        onFocusMarkerId
+        onFocusMarkerId,
+        onChangeZoom
     }
 }

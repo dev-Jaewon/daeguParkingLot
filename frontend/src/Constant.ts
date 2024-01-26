@@ -35,3 +35,23 @@ export const CLUSTER_OPTIONS = {
     // 화면 400픽셀 기준 클러스터
     gridSize: 400,
 }
+
+export const RANGE = {
+    7: 10000,
+    8: 10000,
+    9: 10000,
+    10: 10000,
+    11: 10000,
+    12: 10000,
+    13: 10000,
+    14: 6000,
+    15: 2400,
+    16: 1000,
+    17: 500,
+    18: 240,
+    19: 160,
+    20: 80,
+    21: 40
+};
+
+export const DEFAULT_ZOOM: keyof typeof RANGE = 17;

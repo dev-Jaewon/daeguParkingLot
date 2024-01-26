@@ -49,3 +49,7 @@
 #### 📌 ERD
 
 ![erd](https://velog.velcdn.com/images/app235/post/1a48cd9a-258e-4efe-8a65-b5bec413d2cd/image.png)
+
+## 업데이트
+
+- 1/26 - 지도 zoom 스케일에 따른 검색 범위 수정
