@@ -44,8 +44,12 @@ export const Login = () => {
                     required: '패스워드를 입력해주세요.',
                 })}
             />
-
-            <button>로그인</button>
+            <ControlContainer>
+                {
+                    mutation.error && <NotFoundAccount>Id 및 Password를 확인해주세요.</NotFoundAccount>
+                }
+                <button>로그인</button>
+            </ControlContainer>
             <SignupContent>
                 <p>아직 계정이 없으신가요?</p>
                 <p className='button' onClick={handleClickSignup}>가입하기</p>
@@ -70,7 +74,7 @@ const Container = styled.div`
     
 
     button {
-        margin: 30px 10px 10px 10px;
+        margin: 0px 10px 10px 10px;
         width: 300px;
         height: 40px;
         border: none;
@@ -80,7 +84,6 @@ const Container = styled.div`
     }
 
     p {
-        margin-top: 20px;
         text-align: center;
         font-size: 0.7rem;
     }
@@ -103,3 +106,12 @@ const SignupContent = styled.div`
         cursor: pointer;
     }
 `;
+
+const ControlContainer = styled.div`
+    margin-top: 30px;
+`;
+
+const NotFoundAccount = styled.p`
+    color: red;
+    margin-bottom: 20px;
+`

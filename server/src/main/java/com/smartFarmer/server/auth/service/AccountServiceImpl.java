@@ -53,7 +53,7 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private RefreshTokenService refreshTokenService;
 
-    public ResponseEntity<Void> signup(RequestSignupDto requestSignupDto)throws Exception {
+    public ResponseEntity<Void> signup(RequestSignupDto requestSignupDto) throws Exception {
 
         String encodePassword = passwordEncoder.encode(requestSignupDto.getPassword());
 
@@ -77,31 +77,36 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public ResponseEntity<String> login(RequestLoginDto loginInfo) {
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginInfo.getEmail(),
-                        loginInfo.getPassword()));
+        try {
+            Authentication authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(loginInfo.getEmail(),
+                            loginInfo.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        ResponseCookie jwtCookie = jwtProvider.generateJwtCookie(userDetails.getUsername());
+            ResponseCookie jwtCookie = jwtProvider.generateJwtCookie(userDetails.getUsername());
 
-        RefreshTokenEntity refreshToken = refreshTokenService.createToken(userDetails.getId());
+            RefreshTokenEntity refreshToken = refreshTokenService.createToken(userDetails.getId());
 
-        ResponseCookie jwtRefreshCookie = jwtProvider.generateRefreshJwtCookie(refreshToken.getToken());
+            ResponseCookie jwtRefreshCookie = jwtProvider.generateRefreshJwtCookie(refreshToken.getToken());
 
-        return ResponseEntity
-                .ok()
-                .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                .header(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString())
-                .body(null);
+            return ResponseEntity
+                    .ok()
+                    .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                    .header(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString())
+                    .body(null);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     public ResponseEntity<Boolean> refreshToken(HttpServletRequest request) {
         Cookie refreshToken = WebUtils.getCookie(request, "refreshCookie");
-        
-        if(refreshToken == null){
+
+        if (refreshToken == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
