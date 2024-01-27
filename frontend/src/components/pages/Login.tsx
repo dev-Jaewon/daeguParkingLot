@@ -5,6 +5,7 @@ import { InputValid } from '../atoms/InputValid';
 import { LoginType } from '../../types/Login';
 import { useMutation } from '@tanstack/react-query';
 import { login } from '../../utils/api';
+import { LoadingSpinnerCircle } from '../atoms/LoadingSpinnerCircle';
 
 export const Login = () => {
     const { handleSubmit, register, formState: { errors } } = useForm<LoginType>();
@@ -48,7 +49,11 @@ export const Login = () => {
                 {
                     mutation.error && <NotFoundAccount>Id 및 Password를 확인해주세요.</NotFoundAccount>
                 }
-                <button>로그인</button>
+                <LoginButtonContainer>
+                    {
+                        mutation.isPending ? <LoadingSpinnerCircle/> : <button>로그인</button>
+                    }
+                </LoginButtonContainer>
             </ControlContainer>
             <SignupContent>
                 <p>아직 계정이 없으신가요?</p>
@@ -71,17 +76,6 @@ const Container = styled.div`
     box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
     transform: translate(-50%, -50%);
     user-select: none;
-    
-
-    button {
-        margin: 0px 10px 10px 10px;
-        width: 300px;
-        height: 40px;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-    }
 
     p {
         text-align: center;
@@ -115,3 +109,19 @@ const NotFoundAccount = styled.p`
     color: red;
     margin-bottom: 20px;
 `
+
+const LoginButtonContainer = styled.div`
+    display: flex;
+    width: 300px;
+    height: 40px;
+
+    button {
+        margin: 0px 10px 10px 10px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+    }
+`;
